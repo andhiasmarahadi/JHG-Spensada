@@ -1,0 +1,1502 @@
+<!-- 
+  ========================================================
+  APP NAME : JAGUAR (Jurnal Guru Aktif dan Reflektif)
+  AUTHOR   : WebApp Builder GAS-Blogger v2
+  ========================================================
+-->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAGUAR - SMPN 1 Dawn</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome & SweetAlert2 & SheetJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#e0f2fe', // Soft blue
+                            DEFAULT: '#0284c7', // Primary blue
+                            dark: '#0369a1',
+                            accent: '#f59e0b' // Yellow/Orange accent
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Meng-override template Blogger agar Full Page */
+        body, html { margin: 0; padding: 0; height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0fdfa; }
+        .bg-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230284c7' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+        #app-container { min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Hiding Blogger Elements */
+        .date-header, .post-title, .post-footer, #sidebar, .sidebar, .widget, .Header, .footer-outer { display: none !important; }
+        .post-body { margin: 0 !important; padding: 0 !important; }
+        
+        /* Thumbnail tersembunyi untuk Blogger */
+        .blogger-thumbnail { display: none; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* Loader */
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #0284c7; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-pattern antialiased text-gray-800">
+
+    <!-- Thumbnail Blogger Tersembunyi -->
+    <img src="https://i.ibb.co.com/WpMYv7sL/jaguar.png" alt="JAGUAR Thumbnail" class="blogger-thumbnail">
+
+    <div id="app-container">
+        <!-- SCREEN: LOGIN -->
+        <div id="login-screen" class="min-h-screen flex items-center justify-center p-4">
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden max-w-md w-full p-8 border-t-8 border-brand">
+                <div class="text-center mb-8">
+                    <img src="https://i.ibb.co.com/WpMYv7sL/jaguar.png" alt="JAGUAR Logo" class="h-28 mx-auto mb-4 drop-shadow-md transition transform hover:scale-105">
+                    <h1 class="text-3xl font-extrabold text-brand-dark">JAGUAR</h1>
+                    <p class="text-sm text-gray-500 mt-1">Jurnal Guru Aktif dan Reflektif<br>SMP Negeri 1 Dawn</p>
+                </div>
+                <form id="form-login" onsubmit="handleLogin(event)">
+                    <div class="mb-5">
+                        <label class="block text-sm font-semibold mb-2 text-gray-700"><i class="fa-solid fa-user text-brand mr-2"></i>NIP / Username</label>
+                        <input type="text" id="login-username" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand" required placeholder="Masukkan NIP / Admin">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold mb-2 text-gray-700"><i class="fa-solid fa-lock text-brand mr-2"></i>Password</label>
+                        <input type="password" id="login-password" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" id="btn-login" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-md flex justify-center items-center">
+                        <span>Masuk Aplikasi</span>
+                    </button>
+                    <div id="login-loader" class="hidden mt-4 loader"></div>
+                </form>
+                <div id="preview-notice" class="mt-6 text-xs text-center text-red-500 font-bold hidden bg-red-50 p-2 rounded-lg border border-red-200">
+                    <i class="fa-solid fa-triangle-exclamation"></i> MODE PREVIEW AKTIF<br>
+                    Admin: admin/edudigital<br>Kepsek: kepsek/edudigital<br>Guru: 12345/edudigital
+                </div>
+                <!-- Trademark & Tentang Aplikasi (Halaman Login) -->
+                <div class="mt-8 text-center text-xs text-gray-400">
+                    <p>Aplikasi ini dibuat oleh <b>Andhi si Ganteng</b></p>
+                    <button onclick="showAboutApp()" class="text-brand hover:underline mt-1 font-semibold"><i class="fa-solid fa-circle-info mr-1"></i>Tentang Aplikasi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN: MAIN APP (Hidden initially) -->
+        <div id="main-screen" class="hidden flex-1 flex flex-col md:flex-row">
+            
+            <!-- Sidebar -->
+            <aside class="w-full md:w-64 bg-white shadow-lg md:h-screen flex flex-col z-10 sticky top-0">
+                <div class="p-6 text-center border-b border-gray-100 flex flex-col items-center">
+                    <img src="https://i.ibb.co.com/WpMYv7sL/jaguar.png" alt="Logo" class="h-16 mb-2">
+                    <h2 class="font-bold text-brand-dark text-lg leading-tight">JAGUAR</h2>
+                    <span id="user-role-badge" class="mt-2 bg-brand-light text-brand-dark text-xs font-bold px-3 py-1 rounded-full">Role</span>
+                </div>
+                
+                <div class="p-4 text-center border-b border-gray-100 flex flex-col items-center">
+                    <div id="user-photo-display" class="w-16 h-16 rounded-full bg-gray-200 border-2 border-brand mb-2 overflow-hidden flex items-center justify-center">
+                        <i class="fa-solid fa-user text-3xl text-gray-400"></i>
+                    </div>
+                    <p id="user-name-display" class="font-bold text-sm text-gray-800">Nama User</p>
+                    <p id="user-nip-display" class="text-xs text-gray-500">NIP</p>
+                </div>
+
+                <nav class="flex-1 p-4 space-y-2 overflow-y-auto" id="nav-menu">
+                    <!-- Dinamis via JS -->
+                </nav>
+                <div class="p-4 border-t border-gray-100">
+                    <button onclick="logout()" class="w-full flex items-center justify-center px-4 py-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl font-semibold transition mb-4">
+                        <i class="fa-solid fa-sign-out-alt mr-2"></i> Keluar
+                    </button>
+                    <!-- Trademark & Tentang Aplikasi (Sidebar) -->
+                    <div class="text-center text-xs text-gray-400">
+                        <p>Aplikasi ini dibuat oleh <b>Andhi si Ganteng</b></p>
+                        <button onclick="showAboutApp()" class="text-brand hover:underline mt-1 font-semibold"><i class="fa-solid fa-circle-info mr-1"></i>Tentang Aplikasi</button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="flex-1 p-4 md:p-8 overflow-y-auto max-h-screen">
+                
+                <!-- CONTENT: ADMIN / KEPSEK DASHBOARD -->
+                <div id="view-dashboard" class="view-section hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-2">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0"><i class="fa-solid fa-chart-line text-brand mr-2"></i>Dashboard Jurnal</h2>
+                        <div class="flex space-x-2">
+                            <button id="btn-hapus-jurnal" onclick="openModalDeleteJurnal()" class="bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg font-bold hover:bg-red-100 shadow flex items-center hidden"><i class="fa-solid fa-trash mr-2"></i>Hapus Data</button>
+                            <button onclick="cetakPDFDashboard()" class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 shadow flex items-center"><i class="fa-solid fa-file-pdf mr-2"></i>Cetak PDF</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter for Kepsek -->
+                    <div id="filter-kepsek" class="mb-6 bg-white p-4 rounded-xl shadow-sm border border-gray-100 hidden">
+                        <h3 class="text-sm font-bold text-gray-700 mb-3"><i class="fa-solid fa-filter mr-2"></i>Filter Jurnal</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <input type="date" id="filter-date" class="px-3 py-2 border rounded-lg focus:ring-brand">
+                            <select id="filter-month" class="px-3 py-2 border rounded-lg focus:ring-brand">
+                                <option value="">Semua Bulan</option>
+                                <option value="01">Januari</option> <option value="02">Februari</option> <option value="03">Maret</option>
+                                <option value="04">April</option> <option value="05">Mei</option> <option value="06">Juni</option>
+                                <option value="07">Juli</option> <option value="08">Agustus</option> <option value="09">September</option>
+                                <option value="10">Oktober</option> <option value="11">November</option> <option value="12">Desember</option>
+                            </select>
+                            <input type="text" id="filter-name" placeholder="Cari Nama Guru..." class="px-3 py-2 border rounded-lg focus:ring-brand">
+                            <button onclick="renderDashboardJurnals()" class="bg-brand text-white rounded-lg py-2 font-bold hover:bg-brand-dark"><i class="fa-solid fa-search mr-2"></i>Cari</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-left text-sm whitespace-nowrap">
+                                <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600">
+                                    <tr>
+                                        <th class="px-6 py-4">Waktu</th>
+                                        <th class="px-6 py-4">Guru</th>
+                                        <th class="px-6 py-4">Kelas / Jam</th>
+                                        <th class="px-6 py-4">Uraian</th>
+                                        <th class="px-6 py-4 text-center">Kehadiran</th>
+                                        <th class="px-6 py-4 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-dashboard-jurnal" class="divide-y divide-gray-100">
+                                    <!-- Dinamis -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTENT: KELOLA PENGGUNA (ADMIN) -->
+                <div id="view-users" class="view-section hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-2">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0"><i class="fa-solid fa-users-cog text-brand mr-2"></i>Kelola Pengguna</h2>
+                        <div class="flex space-x-2">
+                            <button onclick="showModalUser()" class="bg-brand text-white px-4 py-2 rounded-lg font-bold hover:bg-brand-dark shadow"><i class="fa-solid fa-plus mr-2"></i>Tambah User</button>
+                            <button onclick="document.getElementById('file-excel').click()" class="bg-green-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-green-700 shadow"><i class="fa-solid fa-file-excel mr-2"></i>Upload Kolektif</button>
+                            <input type="file" id="file-excel" accept=".xlsx, .xls" class="hidden" onchange="handleExcelUpload(event)">
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-left text-sm whitespace-nowrap">
+                                <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600">
+                                    <tr>
+                                        <th class="px-6 py-4">NIP / Username</th>
+                                        <th class="px-6 py-4">Nama Lengkap</th>
+                                        <th class="px-6 py-4">Role</th>
+                                        <th class="px-6 py-4 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-users" class="divide-y divide-gray-100">
+                                    <!-- Dinamis -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTENT: ISI JURNAL (GURU) -->
+                <div id="view-isi-jurnal" class="view-section hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fa-solid fa-pen-to-square text-brand mr-2"></i>Isi Jurnal Baru</h2>
+                    <div class="bg-white rounded-2xl shadow-md border border-brand-light p-6 md:p-8 max-w-3xl mx-auto">
+                        <form id="form-jurnal" onsubmit="submitJurnal(event)">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-bold mb-2 text-gray-700">Tanggal</label>
+                                    <input type="date" id="jurnal-waktu" class="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-brand" required>
+                                </div>
+                                <div class="flex space-x-4">
+                                    <div class="w-1/2">
+                                        <label class="block text-sm font-bold mb-2 text-gray-700">Jam Ke-</label>
+                                        <select id="jurnal-jam" class="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-brand" required>
+                                            <option value="" disabled selected>Pilih</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                                            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                                            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                                        </select>
+                                    </div>
+                                    <div class="w-1/2">
+                                        <label class="block text-sm font-bold mb-2 text-gray-700">S/d Jam Ke-</label>
+                                        <select id="jurnal-jam-sampai" class="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-brand" required>
+                                            <option value="" disabled selected>Pilih</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                                            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                                            <option value="7">7</option><option value="8">8</option><option value="9">9</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-bold mb-2 text-gray-700">Kelas</label>
+                                <select id="jurnal-kelas" class="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-brand" required>
+                                    <option value="" disabled selected>Pilih Kelas</option>
+                                    <option value="Umum">Umum</option>
+                                    <optgroup label="Kelas 7">
+                                        <option value="7A">7A</option><option value="7B">7B</option><option value="7C">7C</option>
+                                        <option value="7D">7D</option><option value="7E">7E</option><option value="7F">7F</option><option value="7G">7G</option>
+                                    </optgroup>
+                                    <optgroup label="Kelas 8">
+                                        <option value="8A">8A</option><option value="8B">8B</option><option value="8C">8C</option>
+                                        <option value="8D">8D</option><option value="8E">8E</option><option value="8F">8F</option><option value="8G">8G</option>
+                                    </optgroup>
+                                    <optgroup label="Kelas 9">
+                                        <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option>
+                                        <option value="9D">9D</option><option value="9E">9E</option><option value="9F">9F</option><option value="9G">9G</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-bold mb-2 text-gray-700">Uraian Kegiatan / Materi PBM</label>
+                                <textarea id="jurnal-uraian" rows="4" class="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-brand" required placeholder="Tuliskan materi dan kegiatan hari ini..."></textarea>
+                            </div>
+
+                            <div class="bg-blue-50 p-4 rounded-xl mb-6">
+                                <label class="block text-sm font-bold mb-3 text-brand-dark"><i class="fa-solid fa-users mr-2"></i>Kehadiran Siswa</label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Hadir</label>
+                                        <input type="number" id="jurnal-hadir" min="0" class="w-full px-3 py-2 rounded-lg border text-center font-bold" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Sakit</label>
+                                        <input type="number" id="jurnal-sakit" min="0" value="0" class="w-full px-3 py-2 rounded-lg border text-center" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Ijin</label>
+                                        <input type="number" id="jurnal-ijin" min="0" value="0" class="w-full px-3 py-2 rounded-lg border text-center" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Alpha</label>
+                                        <input type="number" id="jurnal-alpha" min="0" value="0" class="w-full px-3 py-2 rounded-lg border text-center" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-8">
+                                <label class="block text-sm font-bold mb-2 text-gray-700"><i class="fa-solid fa-camera mr-2"></i>Foto Kegiatan (Otomatis Kompres < 25KB)</label>
+                                <input type="file" id="jurnal-foto" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brand-light file:text-brand hover:file:bg-blue-100" required>
+                                <div id="jurnal-foto-preview" class="mt-3 hidden">
+                                    <img src="" id="img-preview" class="h-32 rounded-lg border shadow-sm">
+                                    <p class="text-xs text-green-600 mt-1" id="img-size-info"></p>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="btn-submit-jurnal" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg text-lg">
+                                <i class="fa-solid fa-paper-plane mr-2"></i> Kirim Jurnal
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- CONTENT: RIWAYAT JURNAL (GURU) -->
+                <div id="view-riwayat-jurnal" class="view-section hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b pb-2">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4 md:mb-0"><i class="fa-solid fa-clock-rotate-left text-brand mr-2"></i>Riwayat Jurnal Saya</h2>
+                        <div class="flex space-x-2">
+                            <select id="export-filter" class="px-3 py-2 border rounded-lg focus:ring-brand text-sm">
+                                <option value="all">Semua Jurnal</option>
+                                <option value="day">Hari Ini</option>
+                                <option value="week">Minggu Ini</option>
+                                <option value="month">Bulan Ini</option>
+                            </select>
+                            <button onclick="cetakPDF()" class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 shadow flex items-center"><i class="fa-solid fa-file-pdf mr-2"></i>Cetak PDF</button>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-left text-sm whitespace-nowrap">
+                                <thead class="uppercase tracking-wider border-b-2 border-gray-200 bg-gray-50 text-gray-600">
+                                    <tr>
+                                        <th class="px-6 py-4">Waktu</th>
+                                        <th class="px-6 py-4">Kelas / Jam</th>
+                                        <th class="px-6 py-4">Uraian</th>
+                                        <th class="px-6 py-4 text-center">Kehadiran (H/S/I/A)</th>
+                                        <th class="px-6 py-4 text-center">Foto</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-riwayat-jurnal" class="divide-y divide-gray-100">
+                                    <!-- Dinamis -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CONTENT: GANTI PASSWORD -->
+                <div id="view-password" class="view-section hidden">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2"><i class="fa-solid fa-key text-brand mr-2"></i>Ganti Password</h2>
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8 max-w-md mx-auto">
+                        <form onsubmit="changePassword(event)">
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold mb-2 text-gray-700">Password Baru</label>
+                                <input type="password" id="new-password" class="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-brand" required>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-sm font-bold mb-2 text-gray-700">Konfirmasi Password</label>
+                                <input type="password" id="confirm-password" class="w-full px-4 py-2 rounded-xl border focus:ring-2 focus:ring-brand" required>
+                            </div>
+                            <button type="submit" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-2 px-4 rounded-xl transition duration-200">Perbarui Password</button>
+                        </form>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAL: KELOLA USER -->
+    <div id="modal-user" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+            <button onclick="closeModalUser()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-times text-xl"></i></button>
+            <h3 class="text-xl font-bold mb-4 border-b pb-2" id="modal-user-title">Tambah Pengguna</h3>
+            <form id="form-user" onsubmit="saveUser(event)">
+                <input type="hidden" id="user-id">
+                <div class="mb-3">
+                    <label class="block text-sm font-bold mb-1">NIP / Username</label>
+                    <input type="text" id="user-nip" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold mb-1">Nama Lengkap</label>
+                    <input type="text" id="user-nama" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold mb-1">Password</label>
+                    <input type="text" id="user-password" class="w-full px-3 py-2 border rounded-lg" required>
+                </div>
+                <div class="mb-3">
+                    <label class="block text-sm font-bold mb-1">Role</label>
+                    <select id="user-role" class="w-full px-3 py-2 border rounded-lg" required>
+                        <option value="Guru">Guru</option>
+                        <option value="Kepala Sekolah">Kepala Sekolah</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-1">Foto Profil (Opsional, Max 25KB)</label>
+                    <input type="file" id="user-foto" accept="image/*" class="w-full text-sm">
+                    <p class="text-xs text-gray-500 mt-1">Akan dikompres otomatis.</p>
+                </div>
+                <button type="submit" class="w-full bg-brand text-white font-bold py-2 rounded-lg hover:bg-brand-dark">Simpan Data</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: LIHAT FOTO -->
+    <div id="modal-foto" class="fixed inset-0 bg-black bg-opacity-80 hidden z-[60] flex items-center justify-center p-4" onclick="this.classList.add('hidden')">
+        <img id="modal-foto-img" src="" class="max-w-full max-h-full rounded-lg shadow-2xl">
+    </div>
+
+    <!-- MODAL: HAPUS JURNAL KOLEKTIF -->
+    <div id="modal-delete-jurnal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative">
+            <button onclick="closeModalDeleteJurnal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-times text-xl"></i></button>
+            <h3 class="text-xl font-bold mb-2 border-b pb-2 text-red-600"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Hapus Jurnal</h3>
+            <p class="text-xs text-gray-500 mb-4">Pilih kriteria jurnal yang akan dihapus. Data yang dihapus tidak dapat dikembalikan!</p>
+            
+            <div class="mb-3">
+                <label class="block text-sm font-bold mb-1">Hapus Berdasarkan</label>
+                <select id="del-jurnal-type" class="w-full px-3 py-2 border rounded-lg focus:ring-brand focus:border-brand" onchange="toggleDeleteJurnalInputs()">
+                    <option value="day">Per Hari / Tanggal</option>
+                    <option value="month">Per Bulan</option>
+                    <option value="year">Per Tahun</option>
+                    <option value="name">Per Nama Guru</option>
+                </select>
+            </div>
+            
+            <div id="del-input-day" class="mb-5 del-input-group">
+                <label class="block text-sm font-bold mb-1">Pilih Tanggal</label>
+                <input type="date" id="del-val-day" class="w-full px-3 py-2 border rounded-lg">
+            </div>
+            <div id="del-input-month" class="mb-5 del-input-group hidden">
+                <label class="block text-sm font-bold mb-1">Pilih Bulan</label>
+                <input type="month" id="del-val-month" class="w-full px-3 py-2 border rounded-lg">
+            </div>
+            <div id="del-input-year" class="mb-5 del-input-group hidden">
+                <label class="block text-sm font-bold mb-1">Masukkan Tahun</label>
+                <input type="number" id="del-val-year" placeholder="Contoh: 2026" class="w-full px-3 py-2 border rounded-lg">
+            </div>
+            <div id="del-input-name" class="mb-5 del-input-group hidden">
+                <label class="block text-sm font-bold mb-1">Ketik Nama Guru</label>
+                <input type="text" id="del-val-name" placeholder="Ketik nama persis/sebagian..." class="w-full px-3 py-2 border rounded-lg">
+            </div>
+            
+            <button onclick="executeDeleteJurnal()" class="w-full bg-red-600 text-white font-bold py-2 rounded-lg hover:bg-red-700 shadow-md">Eksekusi Hapus</button>
+        </div>
+    </div>
+
+    <script>
+        /* ========================================================
+           KONFIGURASI APLIKASI
+           Ubah IS_PREVIEW ke false jika akan di-deploy dengan GAS
+           ======================================================== */
+        const IS_PREVIEW = false; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwi9c3e1lTm067UgIsiu-90tXEV4s-I_0rm0P6QxPJoQccOhtQWtx6oSmTraOHtfO17Iw/exec"; 
+
+        /* ========================================================
+           ANTI HACKER & PENCEGAHAN INSPECT ELEMENT
+           ======================================================== */
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if(e.keyCode == 123) { e.preventDefault(); return false; } // F12
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) { e.preventDefault(); return false; } // Ctrl+Shift+I
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) { e.preventDefault(); return false; } // Ctrl+Shift+C
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) { e.preventDefault(); return false; } // Ctrl+Shift+J
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) { e.preventDefault(); return false; } // Ctrl+U
+        });
+
+        /* ========================================================
+           STATE & DUMMY DATA (UNTUK PREVIEW)
+           ======================================================== */
+        let currentUser = null;
+        let globalUsers = [];
+        let globalJurnals = [];
+
+        // Dummy Data
+        const dummyUsers = [
+            { id_user: '1', nip: 'admin', nama_lengkap: 'Administrator', password: 'edudigital', role: 'Admin', foto: '' },
+            { id_user: '2', nip: 'kepsek', nama_lengkap: 'Bpk. Kepala Sekolah', password: 'edudigital', role: 'Kepala Sekolah', foto: '' },
+            { id_user: '3', nip: '12345', nama_lengkap: 'Budi Santoso, S.Pd', password: 'edudigital', role: 'Guru', foto: '' }
+        ];
+        const dummyJurnals = [
+            { id_jurnal: 'J1', waktu_submit: new Date().toISOString(), nama_guru: 'Budi Santoso, S.Pd', tanggal_waktu: '2026-05-05', jam: '1', kelas: '7A', uraian: 'Mempelajari Aljabar Dasar', hadir: 30, sakit: 0, ijin: 1, alpha: 0, foto: 'https://via.placeholder.com/150' }
+        ];
+
+        /* ========================================================
+           inisialisasi
+           ======================================================== */
+        window.onload = () => {
+            if(IS_PREVIEW) {
+                document.getElementById('preview-notice').classList.remove('hidden');
+                globalUsers = [...dummyUsers];
+                globalJurnals = [...dummyJurnals];
+            } else {
+                // Fetch initial check if logged in (Opsional, kita pakai localStorage)
+                const savedUser = localStorage.getItem('jaguar_user');
+                if(savedUser) {
+                    currentUser = JSON.parse(savedUser);
+                    setupUI();
+                }
+            }
+        };
+
+        /* ========================================================
+           API CONTROLLER (Fungsi Komunikasi ke GAS)
+           ======================================================== */
+        async function apiCall(action, payload = {}) {
+            if (IS_PREVIEW) return simulateBackend(action, payload);
+
+            payload.action = action;
+            try {
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' }, // Hindari preflight CORS
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    return result.data || true;
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                Swal.fire('Error', error.message || 'Terjadi kesalahan koneksi.', 'error');
+                throw error;
+            }
+        }
+
+        // --- Simulasi Backend untuk Mode Preview ---
+        function simulateBackend(action, payload) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if(action === 'login') {
+                        const user = globalUsers.find(u => u.nip === payload.nip && u.password === payload.password);
+                        if(user) resolve(user); else reject(new Error('NIP atau Password salah!'));
+                    }
+                    else if(action === 'getUsers') resolve(globalUsers);
+                    else if(action === 'getJurnals') resolve(globalJurnals);
+                    else if(action === 'saveUser') {
+                        payload.data.id_user = 'U' + new Date().getTime();
+                        globalUsers.push(payload.data);
+                        resolve(true);
+                    }
+                    else if(action === 'saveUsersBulk') {
+                        payload.data.forEach(u => {
+                            u.id_user = 'U' + new Date().getTime() + Math.floor(Math.random()*1000);
+                            globalUsers.push(u);
+                        });
+                        resolve(true);
+                    }
+                    else if(action === 'updateUser') {
+                        const idx = globalUsers.findIndex(u => u.id_user === payload.data.id_user);
+                        if(idx > -1) {
+                            if(!payload.data.foto) payload.data.foto = globalUsers[idx].foto; // Tetap gunakan foto lama jika tidak diubah
+                            globalUsers[idx] = { ...globalUsers[idx], ...payload.data };
+                        }
+                        resolve(true);
+                    }
+                    else if(action === 'deleteUser') {
+                        globalUsers = globalUsers.filter(u => u.id_user !== payload.id_user);
+                        resolve(true);
+                    }
+                    else if(action === 'deleteJurnalsBulk') {
+                        const type = payload.type;
+                        const val = String(payload.value).toLowerCase();
+                        globalJurnals = globalJurnals.filter(j => {
+                            if(type === 'day' || type === 'month' || type === 'year') {
+                                return !j.tanggal_waktu.startsWith(payload.value);
+                            }
+                            if(type === 'name') {
+                                return !j.nama_guru.toLowerCase().includes(val);
+                            }
+                            return true;
+                        });
+                        resolve(true);
+                    }
+                    else if(action === 'saveJurnal') {
+                        payload.data.id_jurnal = 'J' + new Date().getTime();
+                        payload.data.waktu_submit = new Date().toISOString();
+                        globalJurnals.push(payload.data);
+                        resolve(true);
+                    }
+                    else if(action === 'changePassword') {
+                        const idx = globalUsers.findIndex(u => u.nip === payload.nip);
+                        if(idx > -1) globalUsers[idx].password = payload.new_password;
+                        resolve(true);
+                    }
+                }, 500);
+            });
+        }
+
+        /* ========================================================
+           FUNGSI OTENTIKASI (LOGIN / LOGOUT)
+           ======================================================== */
+        async function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-login');
+            const loader = document.getElementById('login-loader');
+            const nip = document.getElementById('login-username').value.trim();
+            const pass = document.getElementById('login-password').value.trim();
+
+            btn.classList.add('hidden');
+            loader.classList.remove('hidden');
+
+            try {
+                const user = await apiCall('login', { nip: nip, password: pass });
+                currentUser = user;
+                if(!IS_PREVIEW) localStorage.setItem('jaguar_user', JSON.stringify(user));
+                
+                Swal.fire({icon: 'success', title: 'Berhasil', text: `Selamat datang, ${user.nama_lengkap}!`, timer: 1500, showConfirmButton: false});
+                setupUI();
+            } catch (err) {
+                btn.classList.remove('hidden');
+                loader.classList.add('hidden');
+                if(IS_PREVIEW) Swal.fire('Error', err.message, 'error');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('jaguar_user');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-screen').classList.add('hidden');
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('btn-login').classList.remove('hidden');
+            document.getElementById('login-loader').classList.add('hidden');
+        }
+
+        /* ========================================================
+           FUNGSI TENTANG APLIKASI
+           ======================================================== */
+        function showAboutApp() {
+            Swal.fire({
+                title: 'Tentang Aplikasi',
+                html: '<p class="text-sm text-gray-700 leading-relaxed text-justify">Aplikasi ini merupakan aplikasi yang dapat membantu guru untuk Menginputkan Jurnal Harian Guru.<br><br>Aplikasi ini Dibuat dengan <b>Google Appscript</b> dengan Database <b>Google Spreadsheet</b>.</p>',
+                imageUrl: 'https://i.ibb.co.com/WpMYv7sL/jaguar.png',
+                imageWidth: 80,
+                confirmButtonColor: '#0284c7',
+                confirmButtonText: 'Tutup'
+            });
+        }
+
+        /* ========================================================
+           UI & NAVIGASI
+           ======================================================== */
+        function setupUI() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
+            
+            // Set Profil
+            document.getElementById('user-name-display').innerText = currentUser.nama_lengkap;
+            document.getElementById('user-nip-display').innerText = currentUser.nip;
+            document.getElementById('user-role-badge').innerText = currentUser.role;
+            if(currentUser.foto) {
+                document.getElementById('user-photo-display').innerHTML = `<img src="${currentUser.foto}" class="w-full h-full object-cover">`;
+            }
+
+            // Bangun Menu Berdasarkan Role
+            const navMenu = document.getElementById('nav-menu');
+            navMenu.innerHTML = '';
+            
+            // Sembunyikan tombol hapus jurnal default, tampilkan hanya di Admin
+            document.getElementById('btn-hapus-jurnal').classList.add('hidden');
+
+            let menus = [];
+            if(currentUser.role === 'Admin') {
+                menus = [
+                    { id: 'dashboard', icon: 'fa-chart-line', text: 'Dashboard', target: 'view-dashboard' },
+                    { id: 'users', icon: 'fa-users-cog', text: 'Kelola Pengguna', target: 'view-users' },
+                    { id: 'password', icon: 'fa-key', text: 'Ganti Password', target: 'view-password' }
+                ];
+                document.getElementById('btn-hapus-jurnal').classList.remove('hidden');
+                loadDashboardData();
+                loadUsersData();
+            } else if (currentUser.role === 'Kepala Sekolah') {
+                menus = [
+                    { id: 'dashboard', icon: 'fa-chart-line', text: 'Pantau Jurnal', target: 'view-dashboard' },
+                    { id: 'password', icon: 'fa-key', text: 'Ganti Password', target: 'view-password' }
+                ];
+                document.getElementById('filter-kepsek').classList.remove('hidden');
+                loadDashboardData();
+            } else if (currentUser.role === 'Guru') {
+                menus = [
+                    { id: 'isi-jurnal', icon: 'fa-pen-to-square', text: 'Isi Jurnal', target: 'view-isi-jurnal' },
+                    { id: 'riwayat', icon: 'fa-clock-rotate-left', text: 'Riwayat Saya', target: 'view-riwayat-jurnal' },
+                    { id: 'password', icon: 'fa-key', text: 'Ganti Password', target: 'view-password' }
+                ];
+                loadRiwayatJurnal();
+            }
+
+            menus.forEach((m, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl mb-1 transition ${idx === 0 ? 'bg-brand text-white shadow-md' : 'text-gray-600 hover:bg-brand-light hover:text-brand-dark'}`;
+                btn.innerHTML = `<i class="fa-solid ${m.icon} w-6 text-left"></i> ${m.text}`;
+                btn.onclick = () => {
+                    // Update Active Nav
+                    Array.from(navMenu.children).forEach(c => {
+                        c.className = 'w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl mb-1 transition text-gray-600 hover:bg-brand-light hover:text-brand-dark';
+                    });
+                    btn.className = 'w-full flex items-center px-4 py-3 text-sm font-semibold rounded-xl mb-1 transition bg-brand text-white shadow-md';
+                    
+                    // Show Section
+                    document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
+                    document.getElementById(m.target).classList.remove('hidden');
+                };
+                navMenu.appendChild(btn);
+            });
+
+            // Trigger click on first menu
+            navMenu.firstChild.click();
+        }
+
+        /* ========================================================
+           FUNGSI KOMPRESI GAMBAR (< 25KB)
+           ======================================================== */
+        async function compressImageTo25KB(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.src = e.target.result;
+                    img.onload = () => {
+                        let canvas = document.createElement('canvas');
+                        let ctx = canvas.getContext('2d');
+                        let width = img.width;
+                        let height = img.height;
+                        
+                        // Resize ekstrim agar mudah mencapai <25KB
+                        const MAX_DIM = 400; 
+                        if (width > height) { if (width > MAX_DIM) { height *= MAX_DIM / width; width = MAX_DIM; } } 
+                        else { if (height > MAX_DIM) { width *= MAX_DIM / height; height = MAX_DIM; } }
+                        
+                        canvas.width = width; canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        let quality = 0.8;
+                        let dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        let sizeKB = Math.round((dataUrl.length * 0.75) / 1024);
+
+                        // Loop menurunkan kualitas sampai ukuran < 25KB
+                        while(sizeKB > 25 && quality > 0.1) {
+                            quality -= 0.1;
+                            dataUrl = canvas.toDataURL('image/jpeg', quality);
+                            sizeKB = Math.round((dataUrl.length * 0.75) / 1024);
+                        }
+                        resolve({ dataUrl, sizeKB });
+                    };
+                };
+            });
+        }
+
+        // Preview Foto di Form Jurnal
+        document.getElementById('jurnal-foto').addEventListener('change', async function() {
+            if(this.files[0]) {
+                const result = await compressImageTo25KB(this.files[0]);
+                document.getElementById('img-preview').src = result.dataUrl;
+                document.getElementById('img-size-info').innerText = `Ukuran: ${result.sizeKB} KB`;
+                document.getElementById('jurnal-foto-preview').classList.remove('hidden');
+                // Simpan base64 ke atribut data
+                this.setAttribute('data-base64', result.dataUrl);
+            }
+        });
+
+        // Modal Tampil Gambar
+        function showImage(src) {
+            document.getElementById('modal-foto-img').src = src;
+            document.getElementById('modal-foto').classList.remove('hidden');
+        }
+
+        /* ========================================================
+           MODUL ADMIN: KELOLA PENGGUNA
+           ======================================================== */
+        let currentLoadedUsers = [];
+
+        async function loadUsersData() {
+            try {
+                const users = await apiCall('getUsers');
+                currentLoadedUsers = users;
+                const tbody = document.getElementById('table-users');
+                tbody.innerHTML = '';
+                users.forEach(u => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-semibold">${u.nip}</td>
+                            <td class="px-6 py-4 flex items-center">
+                                ${u.foto ? `<img src="${u.foto}" class="w-8 h-8 rounded-full mr-3 cursor-pointer object-cover" onclick="showImage('${u.foto}')">` : `<div class="w-8 h-8 rounded-full bg-gray-200 mr-3 flex items-center justify-center"><i class="fa-solid fa-user text-gray-400"></i></div>`}
+                                ${u.nama_lengkap}
+                            </td>
+                            <td class="px-6 py-4"><span class="px-2 py-1 bg-gray-100 rounded text-xs">${u.role}</span></td>
+                            <td class="px-6 py-4 text-center">
+                                <button onclick="editUser('${u.id_user}')" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg mr-1" title="Edit"><i class="fa-solid fa-edit"></i></button>
+                                <button onclick="deleteUser('${u.id_user}')" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {}
+        }
+
+        function showModalUser() {
+            document.getElementById('form-user').reset();
+            document.getElementById('user-id').value = '';
+            document.getElementById('modal-user-title').innerText = 'Tambah Pengguna';
+            document.getElementById('modal-user').classList.remove('hidden');
+        }
+
+        function editUser(id) {
+            const user = currentLoadedUsers.find(u => u.id_user === id);
+            if(!user) return;
+            
+            document.getElementById('user-id').value = user.id_user;
+            document.getElementById('user-nip').value = user.nip;
+            document.getElementById('user-nama').value = user.nama_lengkap;
+            document.getElementById('user-password').value = user.password;
+            document.getElementById('user-role').value = user.role;
+            
+            document.getElementById('modal-user-title').innerText = 'Edit Pengguna';
+            document.getElementById('modal-user').classList.remove('hidden');
+        }
+
+        function closeModalUser() { document.getElementById('modal-user').classList.add('hidden'); }
+
+        async function saveUser(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+            btn.disabled = true;
+
+            const fileInput = document.getElementById('user-foto');
+            let fotoBase64 = '';
+            if(fileInput.files[0]) {
+                const res = await compressImageTo25KB(fileInput.files[0]);
+                fotoBase64 = res.dataUrl;
+            }
+
+            const idUser = document.getElementById('user-id').value;
+            const data = {
+                id_user: idUser,
+                nip: document.getElementById('user-nip').value,
+                nama_lengkap: document.getElementById('user-nama').value,
+                password: document.getElementById('user-password').value,
+                role: document.getElementById('user-role').value,
+                foto: fotoBase64
+            };
+
+            try {
+                const action = idUser ? 'updateUser' : 'saveUser';
+                await apiCall(action, { data: data });
+                Swal.fire('Sukses', idUser ? 'Data pengguna diperbarui!' : 'Pengguna berhasil ditambahkan!', 'success');
+                closeModalUser();
+                loadUsersData();
+            } catch (err) {}
+            btn.innerHTML = 'Simpan Data'; btn.disabled = false;
+        }
+
+        async function deleteUser(id) {
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: "Data pengguna ini akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title: 'Memproses...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+                    try {
+                        await apiCall('deleteUser', { id_user: id });
+                        Swal.fire('Terhapus!', 'Pengguna telah berhasil dihapus.', 'success');
+                        loadUsersData();
+                    } catch (err) {}
+                }
+            });
+        }
+
+        // Fitur Upload Excel Kolektif
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet);
+                
+                // Asumsi kolom Excel: NIP, Nama, Password, Role
+                const usersToUpload = json.map(row => ({
+                    nip: String(row.NIP || ''),
+                    nama_lengkap: row.Nama || '',
+                    password: String(row.Password || ''),
+                    role: row.Role || 'Guru',
+                    foto: '' // Foto dikosongkan untuk upload kolektif
+                })).filter(u => u.nip !== '');
+
+                if(usersToUpload.length > 0) {
+                    Swal.fire({
+                        title: 'Upload Data?',
+                        text: `Ditemukan ${usersToUpload.length} data user. Lanjutkan?`,
+                        icon: 'question', showCancelButton: true
+                    }).then(async (result) => {
+                        if(result.isConfirmed) {
+                            Swal.fire({title: 'Memproses...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+                            try {
+                                await apiCall('saveUsersBulk', { data: usersToUpload });
+                                Swal.fire('Sukses', 'Data berhasil diupload!', 'success');
+                                loadUsersData();
+                            } catch (err) {}
+                        }
+                    });
+                } else {
+                    Swal.fire('Error', 'Format Excel salah atau kosong. Pastikan ada kolom NIP, Nama, Password, Role.', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            e.target.value = ''; // reset input
+        }
+
+        /* ========================================================
+           MODUL JURNAL (ALL ROLES)
+           ======================================================== */
+        function formatTanggal(isoString) {
+            const d = new Date(isoString);
+            return d.toLocaleDateString('id-ID', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+        }
+
+        async function loadDashboardData() {
+            try {
+                let jurnals = await apiCall('getJurnals');
+                
+                // Filter logika untuk Kepsek
+                if(currentUser.role === 'Kepala Sekolah') {
+                    const fDate = document.getElementById('filter-date').value;
+                    const fMonth = document.getElementById('filter-month').value;
+                    const fName = document.getElementById('filter-name').value.toLowerCase();
+                    
+                    if(fDate) jurnals = jurnals.filter(j => j.tanggal_waktu.startsWith(fDate));
+                    if(fMonth) jurnals = jurnals.filter(j => j.tanggal_waktu.substring(5,7) === fMonth);
+                    if(fName) jurnals = jurnals.filter(j => j.nama_guru.toLowerCase().includes(fName));
+                }
+
+                // Sort descending
+                jurnals.sort((a,b) => new Date(b.waktu_submit) - new Date(a.waktu_submit));
+
+                const tbody = document.getElementById('table-dashboard-jurnal');
+                tbody.innerHTML = '';
+                if(jurnals.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-8 text-gray-500">Belum ada data jurnal.</td></tr>';
+                    return;
+                }
+
+                jurnals.forEach(j => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-xs">Isi: ${formatTanggal(j.tanggal_waktu)}<br><span class="text-gray-400">Submit: ${new Date(j.waktu_submit).toLocaleString('id-ID')}</span></td>
+                            <td class="px-6 py-4 font-bold text-brand">${j.nama_guru}</td>
+                            <td class="px-6 py-4">Kls: ${j.kelas} | Jam: ${j.jam}</td>
+                            <td class="px-6 py-4 whitespace-normal min-w-[200px] text-xs">${j.uraian}</td>
+                            <td class="px-6 py-4 text-center">
+                                <span class="text-green-600 font-bold" title="Hadir">${j.hadir}</span> / 
+                                <span class="text-yellow-500" title="Sakit">${j.sakit}</span> / 
+                                <span class="text-blue-500" title="Ijin">${j.ijin}</span> / 
+                                <span class="text-red-500" title="Alpha">${j.alpha}</span>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                ${j.foto ? `<button onclick="showImage('${j.foto}')" class="bg-brand-light text-brand p-2 rounded-lg hover:bg-brand hover:text-white transition"><i class="fa-solid fa-image"></i></button>` : '-'}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {}
+        }
+        
+        // Alias untuk tombol cari
+        window.renderDashboardJurnals = loadDashboardData;
+
+        // FUNGSI MODAL HAPUS JURNAL KOLEKTIF
+        function openModalDeleteJurnal() {
+            document.getElementById('modal-delete-jurnal').classList.remove('hidden');
+            toggleDeleteJurnalInputs();
+        }
+
+        function closeModalDeleteJurnal() {
+            document.getElementById('modal-delete-jurnal').classList.add('hidden');
+            // Reset input
+            document.getElementById('del-val-day').value = '';
+            document.getElementById('del-val-month').value = '';
+            document.getElementById('del-val-year').value = '';
+            document.getElementById('del-val-name').value = '';
+        }
+
+        function toggleDeleteJurnalInputs() {
+            const type = document.getElementById('del-jurnal-type').value;
+            document.querySelectorAll('.del-input-group').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`del-input-${type}`).classList.remove('hidden');
+        }
+
+        async function executeDeleteJurnal() {
+            const type = document.getElementById('del-jurnal-type').value;
+            let val = document.getElementById(`del-val-${type}`).value.trim();
+            
+            if(!val) {
+                Swal.fire('Peringatan', 'Mohon isi kriteria yang ingin dihapus.', 'warning');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Anda Yakin?',
+                text: "Jurnal yang cocok dengan kriteria ini akan Dihapus Permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus Permanen!'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title: 'Memproses...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+                    try {
+                        await apiCall('deleteJurnalsBulk', { type: type, value: val });
+                        Swal.fire('Terhapus!', 'Data jurnal telah berhasil dibersihkan.', 'success');
+                        closeModalDeleteJurnal();
+                        loadDashboardData(); // Refresh tabel
+                    } catch(err) {}
+                }
+            });
+        }
+
+        // Guru: Isi Jurnal
+        async function submitJurnal(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit-jurnal');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Mengirim...';
+            btn.disabled = true;
+
+            const inputFoto = document.getElementById('jurnal-foto');
+            const fotoBase64 = inputFoto.getAttribute('data-base64') || '';
+
+            const jamMulai = document.getElementById('jurnal-jam').value;
+            const jamSampai = document.getElementById('jurnal-jam-sampai').value;
+            
+            // Validasi urutan jam
+            if (parseInt(jamMulai) > parseInt(jamSampai)) {
+                Swal.fire('Error', 'Urutan Jam Mulai tidak boleh lebih besar dari Jam Sampai!', 'error');
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i> Kirim Jurnal';
+                btn.disabled = false;
+                return;
+            }
+            
+            // Gabungkan format jam
+            const finalJam = (jamMulai === jamSampai) ? jamMulai : `${jamMulai}-${jamSampai}`;
+
+            const data = {
+                nama_guru: currentUser.nama_lengkap,
+                nip_guru: currentUser.nip,
+                tanggal_waktu: document.getElementById('jurnal-waktu').value,
+                jam: finalJam,
+                kelas: document.getElementById('jurnal-kelas').value,
+                uraian: document.getElementById('jurnal-uraian').value,
+                hadir: document.getElementById('jurnal-hadir').value,
+                sakit: document.getElementById('jurnal-sakit').value,
+                ijin: document.getElementById('jurnal-ijin').value,
+                alpha: document.getElementById('jurnal-alpha').value,
+                foto: fotoBase64
+            };
+
+            try {
+                await apiCall('saveJurnal', { data: data });
+                Swal.fire('Sukses', 'Jurnal berhasil dikirim!', 'success');
+                document.getElementById('form-jurnal').reset();
+                document.getElementById('jurnal-foto-preview').classList.add('hidden');
+                inputFoto.removeAttribute('data-base64');
+                loadRiwayatJurnal(); // Refresh history
+            } catch (err) {}
+            
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane mr-2"></i> Kirim Jurnal';
+            btn.disabled = false;
+        }
+
+        // Guru: Riwayat
+        async function loadRiwayatJurnal() {
+            try {
+                let jurnals = await apiCall('getJurnals');
+                // Filter hanya milik guru ini
+                jurnals = jurnals.filter(j => j.nip_guru === currentUser.nip);
+                jurnals.sort((a,b) => new Date(b.waktu_submit) - new Date(a.waktu_submit));
+
+                const tbody = document.getElementById('table-riwayat-jurnal');
+                tbody.innerHTML = '';
+                if(jurnals.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-8 text-gray-500">Anda belum mengisi jurnal.</td></tr>';
+                    return;
+                }
+
+                jurnals.forEach(j => {
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 text-xs">Isi: ${formatTanggal(j.tanggal_waktu)}</td>
+                            <td class="px-6 py-4">Kls: ${j.kelas} | Jam: ${j.jam}</td>
+                            <td class="px-6 py-4 whitespace-normal min-w-[200px] text-xs">${j.uraian}</td>
+                            <td class="px-6 py-4 text-center">
+                                H:${j.hadir} S:${j.sakit} I:${j.ijin} A:${j.alpha}
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                ${j.foto ? `<button onclick="showImage('${j.foto}')" class="text-brand hover:text-brand-dark"><i class="fa-solid fa-image fa-lg"></i></button>` : '-'}
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {}
+        }
+
+        // Export PDF
+        async function cetakPDF() {
+            try {
+                let jurnals = await apiCall('getJurnals');
+                jurnals = jurnals.filter(j => j.nip_guru === currentUser.nip);
+                
+                const filterVal = document.getElementById('export-filter').value;
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const todayStr = `${year}-${month}-${day}`;
+                
+                if(filterVal === 'day') {
+                    jurnals = jurnals.filter(j => j.tanggal_waktu.startsWith(todayStr));
+                } else if(filterVal === 'week') {
+                    const lastWeek = new Date();
+                    lastWeek.setDate(now.getDate() - 7);
+                    jurnals = jurnals.filter(j => new Date(j.tanggal_waktu) >= lastWeek);
+                } else if(filterVal === 'month') {
+                    jurnals = jurnals.filter(j => j.tanggal_waktu.startsWith(`${year}-${month}`));
+                }
+
+                if(jurnals.length === 0) {
+                    Swal.fire('Info', 'Tidak ada data untuk dicetak pada periode ini.', 'info');
+                    return;
+                }
+
+                // 1. URUTKAN DATA: Berdasarkan Tanggal lalu Jam Ke-
+                jurnals.sort((a, b) => {
+                    if (a.tanggal_waktu === b.tanggal_waktu) return parseInt(a.jam) - parseInt(b.jam);
+                    return new Date(a.tanggal_waktu) - new Date(b.tanggal_waktu);
+                });
+
+                // 2. PEMETAAN WAKTU MENGAJAR
+                const timeMap = {
+                    "0": "07.00 - 07.20", "1": "07.20 - 07.55", "2": "07.55 - 08.30",
+                    "3": "08.30 - 09.05", "4": "09.25 - 10.00", "5": "10.00 - 10.35",
+                    "6": "10.35 - 11.10", "7": "11.30 - 12.05", "8": "12.05 - 12.40",
+                    "9": "12.40 - 13.30"
+                };
+
+                // 3. GROUPING DATA BERDASARKAN TANGGAL
+                let grouped = {};
+                jurnals.forEach(j => {
+                    if (!grouped[j.tanggal_waktu]) grouped[j.tanggal_waktu] = [];
+                    grouped[j.tanggal_waktu].push(j);
+                });
+
+                // 4. SUSUN BARIS TABEL HTML (Tbody)
+                let tbodyHtml = '';
+                let no = 1;
+
+                for (let date in grouped) {
+                    let items = grouped[date];
+                    let dateObj = new Date(date);
+                    let dayName = dateObj.toLocaleDateString('id-ID', { weekday: 'long' });
+                    let dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                    let fullDateText = `${dayName},<br>${dateStr}`;
+                    let rowSpan = items.length;
+
+                    items.forEach((item, index) => {
+                        // Logika pembacaan rentang waktu otomatis
+                        let waktu = "-";
+                        if(String(item.jam).includes('-')) {
+                            let p = String(item.jam).split('-');
+                            let start = timeMap[p[0]];
+                            let end = timeMap[p[1]];
+                            if(start && end) waktu = start.split(' - ')[0] + ' - ' + end.split(' - ')[1];
+                        } else {
+                            waktu = timeMap[item.jam] || "-";
+                        }
+                        
+                        // Cek apakah ada foto, jika ada tampilkan tag <img>, jika tidak tampilkan tanda strip
+                        let fotoImg = item.foto ? `<img src="${item.foto}" class="foto-print">` : `-`;
+
+                        tbodyHtml += `<tr>`;
+                        if(index === 0) {
+                            tbodyHtml += `<td rowspan="${rowSpan}">${no}</td>`;
+                            tbodyHtml += `<td rowspan="${rowSpan}">${fullDateText}</td>`;
+                        }
+                        tbodyHtml += `
+                            <td>${waktu}</td>
+                            <td>${item.jam}</td>
+                            <td>${item.kelas}</td>
+                            <td class="uraian">${item.uraian}</td>
+                            <td>${item.hadir}</td>
+                            <td>${item.sakit}</td>
+                            <td>${item.ijin}</td>
+                            <td>${item.alpha}</td>
+                            <td>${fotoImg}</td>
+                        </tr>`;
+                    });
+                    no++;
+                }
+
+                // 5. SIAPKAN TANGGAL CETAK UNTUK TANDA TANGAN
+                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                const tglCetakObj = new Date();
+                const tglCetakStr = `${tglCetakObj.getDate()} ${monthNames[tglCetakObj.getMonth()]} ${tglCetakObj.getFullYear()}`;
+
+                // 6. BUKA TAB BARU UNTUK RENDER HALAMAN PDF
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>Jurnal_${currentUser.nama_lengkap.replace(/\s+/g, '_')}</title>
+                        <style>
+                            /* Ubah ukuran halaman menjadi A4 Portrait */
+                            @page { size: A4 portrait; margin: 15mm; }
+                            body { font-family: 'Times New Roman', Times, serif; font-size: 10pt; color: black; margin: 0; padding: 0; line-height: 1.3; }
+                            .kop { width: 100%; max-width: 100%; margin: 0 auto 15px auto; display: block; }
+                            
+                            /* Penataan Tabel agar rapi dan indah */
+                            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: auto; table-layout: fixed; word-wrap: break-word; }
+                            tr { page-break-inside: avoid; page-break-after: auto; }
+                            th, td { border: 1px solid black; padding: 6px 4px; text-align: center; vertical-align: middle; }
+                            th { background-color: #f0f8ff; font-weight: bold; font-size: 9pt; padding: 10px 4px; }
+                            .uraian { text-align: left; vertical-align: top; padding: 8px; }
+                            
+                            /* Ukuran foto diperkecil untuk menyesuaikan lebar kolom Portrait */
+                            .foto-print { max-width: 55px; max-height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; display: block; margin: 0 auto; }
+                            
+                            /* CSS Tanda Tangan */
+                            .signature-section { width: 100%; margin-top: 40px; display: table; font-size: 10pt; page-break-inside: avoid; }
+                            .sig-box { display: table-cell; width: 50%; vertical-align: top; }
+                            .sig-box p { margin: 0; line-height: 1.6; }
+                            .sig-box-right { padding-left: 20%; }
+                            
+                            /* Tombol Cetak */
+                            .print-btn { display: block; width: 300px; margin: 20px auto; padding: 12px; background: #dc2626; color: white; text-align: center; cursor: pointer; text-decoration: none; border-radius: 8px; font-family: sans-serif; font-weight: bold; border: none; font-size: 14px;}
+                            .print-btn:hover { background: #b91c1c; }
+                            @media print { .no-print { display: none !important; } }
+                        </style>
+                    </head>
+                    <body>
+                        <button class="print-btn no-print" onclick="window.print()">Simpan sebagai PDF (Cetak)</button>
+                        
+                        <!-- Gambar KOP -->
+                        <img src="https://i.ibb.co.com/WvrMM3ZG/kop.png" class="kop" onload="setTimeout(()=>window.print(), 800)">
+                        
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="width:3%;">No</th>
+                                    <th rowspan="2" style="width:11%;">Hari/Tanggal</th>
+                                    <th rowspan="2" style="width:11%;">Waktu</th>
+                                    <th rowspan="2" style="width:4%;">Jam Ke</th>
+                                    <th rowspan="2" style="width:5%;">Kelas</th>
+                                    <th rowspan="2" style="width:28%;">Uraian Kegiatan</th>
+                                    <th rowspan="2" style="width:8%;">Banyak Siswa Ikut PBM</th>
+                                    <th colspan="3" style="width:15%;">Banyak Siswa Tidak Ikut PBM</th>
+                                    <th rowspan="2" style="width:15%;">Foto</th>
+                                </tr>
+                                <tr>
+                                    <th style="width:5%;">Sakit</th>
+                                    <th style="width:5%;">Ijin</th>
+                                    <th style="width:5%;">Alpha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tbodyHtml}
+                            </tbody>
+                        </table>
+
+                        <!-- Bagian Tanda Tangan -->
+                        <div class="signature-section">
+                            <div class="sig-box">
+                                <p>Mengetahui<br>Kepala SMPN 1 Dawan</p>
+                                <br><br><br><br>
+                                <p><b>Ni Kadek Yadnyani, S.Pd</b><br>NIP. 19791016 200604 2 006</p>
+                            </div>
+                            <div class="sig-box sig-box-right">
+                                <p>Dawan, ${tglCetakStr}<br>Guru Mata Pelajaran</p>
+                                <br><br><br><br>
+                                <p><b>${currentUser.nama_lengkap}</b><br>NIP. ${currentUser.nip}</p>
+                            </div>
+                        </div>
+
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'Gagal memproses PDF.', 'error');
+            }
+        }
+
+        // Export PDF Khusus Dashboard (Admin & Kepsek)
+        async function cetakPDFDashboard() {
+            try {
+                let jurnals = await apiCall('getJurnals');
+                
+                // Jika Kepsek, terapkan filter sesuai yang dipilih di UI
+                if(currentUser.role === 'Kepala Sekolah') {
+                    const fDate = document.getElementById('filter-date').value;
+                    const fMonth = document.getElementById('filter-month').value;
+                    const fName = document.getElementById('filter-name').value.toLowerCase();
+                    
+                    if(fDate) jurnals = jurnals.filter(j => j.tanggal_waktu.startsWith(fDate));
+                    if(fMonth) jurnals = jurnals.filter(j => j.tanggal_waktu.substring(5,7) === fMonth);
+                    if(fName) jurnals = jurnals.filter(j => j.nama_guru.toLowerCase().includes(fName));
+                }
+
+                if(jurnals.length === 0) {
+                    Swal.fire('Info', 'Tidak ada data untuk dicetak.', 'info');
+                    return;
+                }
+
+                // 1. URUTKAN DATA
+                jurnals.sort((a, b) => {
+                    if (a.tanggal_waktu === b.tanggal_waktu) return parseInt(a.jam) - parseInt(b.jam);
+                    return new Date(a.tanggal_waktu) - new Date(b.tanggal_waktu);
+                });
+
+                // 2. PEMETAAN WAKTU MENGAJAR
+                const timeMap = {
+                    "0": "07.00 - 07.20", "1": "07.20 - 07.55", "2": "07.55 - 08.30",
+                    "3": "08.30 - 09.05", "4": "09.25 - 10.00", "5": "10.00 - 10.35",
+                    "6": "10.35 - 11.10", "7": "11.30 - 12.05", "8": "12.05 - 12.40",
+                    "9": "12.40 - 13.30"
+                };
+
+                // 3. GROUPING DATA BERDASARKAN TANGGAL
+                let grouped = {};
+                jurnals.forEach(j => {
+                    if (!grouped[j.tanggal_waktu]) grouped[j.tanggal_waktu] = [];
+                    grouped[j.tanggal_waktu].push(j);
+                });
+
+                // 4. SUSUN BARIS TABEL HTML
+                let tbodyHtml = '';
+                let no = 1;
+
+                for (let date in grouped) {
+                    let items = grouped[date];
+                    let dateObj = new Date(date);
+                    let dayName = dateObj.toLocaleDateString('id-ID', { weekday: 'long' });
+                    let dateStr = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                    let fullDateText = `${dayName},<br>${dateStr}`;
+                    let rowSpan = items.length;
+
+                    items.forEach((item, index) => {
+                        let waktu = "-";
+                        if(String(item.jam).includes('-')) {
+                            let p = String(item.jam).split('-');
+                            let start = timeMap[p[0]];
+                            let end = timeMap[p[1]];
+                            if(start && end) waktu = start.split(' - ')[0] + ' - ' + end.split(' - ')[1];
+                        } else {
+                            waktu = timeMap[item.jam] || "-";
+                        }
+                        
+                        let fotoImg = item.foto ? `<img src="${item.foto}" class="foto-print">` : `-`;
+                        
+                        // Menambahkan Nama Guru ke Uraian agar Admin/Kepsek mengetahui pemilik jurnal
+                        let uraianTeks = `<b>[${item.nama_guru}]</b><br>${item.uraian}`;
+
+                        tbodyHtml += `<tr>`;
+                        if(index === 0) {
+                            tbodyHtml += `<td rowspan="${rowSpan}">${no}</td>`;
+                            tbodyHtml += `<td rowspan="${rowSpan}">${fullDateText}</td>`;
+                        }
+                        tbodyHtml += `
+                            <td>${waktu}</td>
+                            <td>${item.jam}</td>
+                            <td>${item.kelas}</td>
+                            <td class="uraian">${uraianTeks}</td>
+                            <td>${item.hadir}</td>
+                            <td>${item.sakit}</td>
+                            <td>${item.ijin}</td>
+                            <td>${item.alpha}</td>
+                            <td>${fotoImg}</td>
+                        </tr>`;
+                    });
+                    no++;
+                }
+
+                // 5. SIAPKAN TANGGAL CETAK
+                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                const tglCetakObj = new Date();
+                const tglCetakStr = `${tglCetakObj.getDate()} ${monthNames[tglCetakObj.getMonth()]} ${tglCetakObj.getFullYear()}`;
+
+                // 6. BUKA TAB BARU UNTUK RENDER HALAMAN PDF
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html>
+                    <head>
+                        <title>Rekap_Jurnal_${currentUser.role.replace(/\s+/g, '_')}</title>
+                        <style>
+                            @page { size: A4 portrait; margin: 15mm; }
+                            body { font-family: 'Times New Roman', Times, serif; font-size: 10pt; color: black; margin: 0; padding: 0; line-height: 1.3; }
+                            .kop { width: 100%; max-width: 100%; margin: 0 auto 15px auto; display: block; }
+                            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: auto; table-layout: fixed; word-wrap: break-word; }
+                            tr { page-break-inside: avoid; page-break-after: auto; }
+                            th, td { border: 1px solid black; padding: 6px 4px; text-align: center; vertical-align: middle; }
+                            th { background-color: #f0f8ff; font-weight: bold; font-size: 9pt; padding: 10px 4px; }
+                            .uraian { text-align: left; vertical-align: top; padding: 8px; }
+                            .foto-print { max-width: 55px; max-height: 55px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; display: block; margin: 0 auto; }
+                            .signature-section { width: 100%; margin-top: 40px; display: table; font-size: 10pt; page-break-inside: avoid; }
+                            .sig-box { display: table-cell; width: 50%; vertical-align: top; }
+                            .sig-box p { margin: 0; line-height: 1.6; }
+                            .sig-box-right { padding-left: 20%; }
+                            .print-btn { display: block; width: 300px; margin: 20px auto; padding: 12px; background: #dc2626; color: white; text-align: center; cursor: pointer; text-decoration: none; border-radius: 8px; font-family: sans-serif; font-weight: bold; border: none; font-size: 14px;}
+                            .print-btn:hover { background: #b91c1c; }
+                            @media print { .no-print { display: none !important; } }
+                        </style>
+                    </head>
+                    <body>
+                        <button class="print-btn no-print" onclick="window.print()">Simpan Rekap sebagai PDF (Cetak)</button>
+                        <img src="https://i.ibb.co.com/WvrMM3ZG/kop.png" class="kop" onload="setTimeout(()=>window.print(), 800)">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th rowspan="2" style="width:3%;">No</th>
+                                    <th rowspan="2" style="width:11%;">Hari/Tanggal</th>
+                                    <th rowspan="2" style="width:11%;">Waktu</th>
+                                    <th rowspan="2" style="width:4%;">Jam Ke</th>
+                                    <th rowspan="2" style="width:5%;">Kelas</th>
+                                    <th rowspan="2" style="width:28%;">Uraian Kegiatan</th>
+                                    <th rowspan="2" style="width:8%;">Banyak Siswa Ikut PBM</th>
+                                    <th colspan="3" style="width:15%;">Banyak Siswa Tidak Ikut PBM</th>
+                                    <th rowspan="2" style="width:15%;">Foto</th>
+                                </tr>
+                                <tr>
+                                    <th style="width:5%;">Sakit</th>
+                                    <th style="width:5%;">Ijin</th>
+                                    <th style="width:5%;">Alpha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${tbodyHtml}
+                            </tbody>
+                        </table>
+                        <div class="signature-section">
+                            <div class="sig-box">
+                                <p>Mengetahui<br>Kepala SMPN 1 Dawan</p>
+                                <br><br><br><br>
+                                <p><b>Ni Kadek Yadnyani, S.Pd</b><br>NIP. 19791016 200604 2 006</p>
+                            </div>
+                            <div class="sig-box sig-box-right">
+                                <p>Dawan, ${tglCetakStr}<br>Dicetak Oleh (${currentUser.role})</p>
+                                <br><br><br><br>
+                                <p><b>${currentUser.nama_lengkap}</b><br>NIP. ${currentUser.nip || '-'}</p>
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `);
+                printWindow.document.close();
+
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Error', 'Gagal memproses PDF Dashboard.', 'error');
+            }
+        }
+
+        /* ========================================================
+           MODUL GANTI PASSWORD
+           ======================================================== */
+        async function changePassword(e) {
+            e.preventDefault();
+            const pass1 = document.getElementById('new-password').value;
+            const pass2 = document.getElementById('confirm-password').value;
+
+            if(pass1 !== pass2) {
+                Swal.fire('Error', 'Password tidak cocok!', 'error');
+                return;
+            }
+
+            try {
+                await apiCall('changePassword', { nip: currentUser.nip, new_password: pass1 });
+                Swal.fire('Sukses', 'Password berhasil diperbarui.', 'success');
+                currentUser.password = pass1;
+                localStorage.setItem('jaguar_user', JSON.stringify(currentUser));
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+            } catch(err) {}
+        }
+    </script>
+</body>
+</html>
