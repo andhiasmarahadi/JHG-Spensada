@@ -66,7 +66,7 @@
     <!-- KONFIGURASI APLIKASI -->
     <script>
         const IS_PREVIEW = false; // Pastikan ini FALSE untuk versi GitHub
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwd8-MLRxpidxWF0CFl_upWAy8do6IucOwFmxTO_p_NaX-4-uiR5KkQS33s49aq46DM/exec"; // Wajib diisi dengan URL Deploy GAS terbaru
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyKbKTexzYEip0Tq8x9i_PuStoYeptS9mErNbVb0g8KmRB6RkWE2Aost2lHdsUxBw4u/exec"; // Wajib diisi dengan URL Deploy GAS terbaru
         const APP_LOGO = "https://i.imghippo.com/files/RG1026Lg.png";
         const PRINT_KOP = "https://i.imghippo.com/files/tuTX6225pKs.png";
     </script>
@@ -169,7 +169,10 @@
         let currentFilteredJournals = []; 
 
         const getAvatar = (nama, foto) => {
-            // Validasi cerdas: Gunakan foto hanya jika valid (bukan kosong, bukan placeholder lama, bukan avatar generate)
+            // Perbaikan deteksi Base64 agar foto valid pasti digunakan
+            if (foto && typeof foto === 'string' && foto.startsWith('data:image')) {
+                return foto;
+            }
             if (foto && typeof foto === 'string' && foto.trim() !== '' && !foto.includes('via.placeholder.com') && !foto.includes('ui-avatars.com')) {
                 return foto.trim();
             }
@@ -207,7 +210,8 @@
             });
         };
 
-        const compressImage = async (file) => {
+        // Tambahan Parameter "isAvatar" agar kompresi foto profil dikecilkan ekstrim (menghindari error Google Sheets)
+        const compressImage = async (file, isAvatar = false) => {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -218,7 +222,10 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        const maxDim = 400; // Disesuaikan agar kode base64 tidak melebihi 50,000 karakter Google Sheets
+                        
+                        // Jika untuk avatar, set ukuran kecil (max 200px), jika jurnal max 400px
+                        const maxDim = isAvatar ? 200 : 400; 
+                        
                         if (width > height) {
                             if (width > maxDim) { height *= maxDim / width; width = maxDim; }
                         } else {
@@ -228,7 +235,7 @@
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.5)); // Quality disesuaikan menjadi 0.5 agar aman tersimpan
+                        resolve(canvas.toDataURL('image/jpeg', 0.5)); 
                     };
                 };
             });
@@ -697,7 +704,7 @@
             if (input.files && input.files[0]) {
                 const container = document.getElementById('foto-preview-container');
                 const img = document.getElementById('f-foto-img');
-                const base64 = await compressImage(input.files[0]);
+                const base64 = await compressImage(input.files[0], false); // Foto Jurnal (Bukan Avatar)
                 img.src = base64;
                 container.classList.remove('hidden');
             }
@@ -939,7 +946,7 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = async (e) => {
-                    const compressed = await compressImage(input.files[0]);
+                    const compressed = await compressImage(input.files[0], true); // Khusus Avatar
                     document.getElementById('swal-img-preview').src = compressed;
                 };
                 reader.readAsDataURL(input.files[0]);
@@ -986,7 +993,7 @@
 
         async function previewProfilePhoto(input) {
             if (input.files && input.files[0]) {
-                const base64 = await compressImage(input.files[0]);
+                const base64 = await compressImage(input.files[0], true); // Khusus Avatar
                 document.getElementById('p-foto-preview').src = base64;
             }
         }
@@ -1314,9 +1321,26 @@
                     confirmButtonColor: '#d33'
                 });
                 if(confirm.isConfirmed) {
-                    journalsData = [];
-                    renderPage('dashboard');
-                    notify('Seluruh data dihapus');
+                    showLoader(true);
+                    if (IS_PREVIEW) {
+                        setTimeout(() => {
+                            journalsData = [];
+                            showLoader(false);
+                            renderPage('dashboard');
+                            notify('Seluruh data dihapus');
+                        }, 1000);
+                    } else {
+                        callBackend('deleteJournalsGAS', { type: 'all' }).then(res => {
+                            showLoader(false);
+                            if(res.status === 'success') {
+                                journalsData = res.journals;
+                                renderPage('dashboard');
+                                notify('Seluruh data dihapus');
+                            } else {
+                                notify(res.message, 'error');
+                            }
+                        });
+                    }
                 }
             } else if (type === 'range') {
                 const { value: dates } = await Swal.fire({
@@ -1325,9 +1349,26 @@
                     preConfirm: () => [document.getElementById('d-start').value, document.getElementById('d-end').value]
                 });
                 if(dates[0] && dates[1]) {
-                    journalsData = journalsData.filter(j => j.tanggal < dates[0] || j.tanggal > dates[1]);
-                    renderPage('dashboard');
-                    notify('Data berhasil dihapus');
+                    showLoader(true);
+                    if (IS_PREVIEW) {
+                        setTimeout(() => {
+                            journalsData = journalsData.filter(j => j.tanggal < dates[0] || j.tanggal > dates[1]);
+                            showLoader(false);
+                            renderPage('dashboard');
+                            notify('Data berhasil dihapus');
+                        }, 1000);
+                    } else {
+                        callBackend('deleteJournalsGAS', { type: 'range', start: dates[0], end: dates[1] }).then(res => {
+                            showLoader(false);
+                            if(res.status === 'success') {
+                                journalsData = res.journals;
+                                renderPage('dashboard');
+                                notify('Data rentang tanggal berhasil dihapus');
+                            } else {
+                                notify(res.message, 'error');
+                            }
+                        });
+                    }
                 }
             } else if (type === 'guru') {
                 const { value: nip } = await Swal.fire({
@@ -1336,9 +1377,26 @@
                     inputPlaceholder: 'Masukkan NIP Guru'
                 });
                 if(nip) {
-                    journalsData = journalsData.filter(j => j.nip_user !== nip);
-                    renderPage('dashboard');
-                    notify('Data guru tersebut dihapus');
+                    showLoader(true);
+                    if (IS_PREVIEW) {
+                        setTimeout(() => {
+                            journalsData = journalsData.filter(j => j.nip_user !== nip);
+                            showLoader(false);
+                            renderPage('dashboard');
+                            notify('Data guru tersebut dihapus');
+                        }, 1000);
+                    } else {
+                        callBackend('deleteJournalsGAS', { type: 'guru', nip: nip }).then(res => {
+                            showLoader(false);
+                            if(res.status === 'success') {
+                                journalsData = res.journals;
+                                renderPage('dashboard');
+                                notify('Data jurnal guru berhasil dihapus');
+                            } else {
+                                notify(res.message, 'error');
+                            }
+                        });
+                    }
                 }
             }
         }
