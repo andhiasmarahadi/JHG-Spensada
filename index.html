@@ -169,7 +169,10 @@
         let currentFilteredJournals = []; 
 
         const getAvatar = (nama, foto) => {
-            if (foto && foto.trim() !== '') return foto;
+            // Validasi cerdas: Gunakan foto hanya jika valid (bukan kosong, bukan placeholder lama, bukan avatar generate)
+            if (foto && foto.trim() !== '' && !foto.includes('via.placeholder.com') && !foto.includes('ui-avatars.com')) {
+                return foto;
+            }
             return `https://ui-avatars.com/api/?name=${encodeURIComponent(nama || 'User')}&background=eff6ff&color=2563eb&bold=true&rounded=true`;
         };
 
@@ -881,13 +884,17 @@
                 },
                 buttonsStyling: false,
                 preConfirm: () => {
+                    // Cek apakah img preview adalah file baru (base64) atau sekadar avatar generate
+                    const imgSrc = document.getElementById('swal-img-preview').src;
+                    const finalFoto = imgSrc.startsWith('data:image') ? imgSrc : user.foto;
+
                     return {
                         nip: document.getElementById('swal-nip').value,
                         nama: document.getElementById('swal-nama').value,
                         mapel: document.getElementById('swal-mapel').value,
                         password: document.getElementById('swal-pass').value,
                         role: document.getElementById('swal-role').value,
-                        foto: document.getElementById('swal-img-preview').src
+                        foto: finalFoto
                     };
                 }
             });
@@ -981,11 +988,16 @@
 
         function updateProfile() {
             showLoader(true);
+            
+            // Cek apakah ada foto baru yang diunggah (base64) atau pakai data yang lama
+            const imgPreviewSrc = document.getElementById('p-foto-preview').src;
+            const finalFoto = imgPreviewSrc.startsWith('data:image') ? imgPreviewSrc : currentUser.foto;
+
             const newData = {
                 ...currentUser,
                 nama: document.getElementById('p-nama').value,
                 password: document.getElementById('p-pass').value,
-                foto: document.getElementById('p-foto-preview').src
+                foto: finalFoto
             };
 
             if(IS_PREVIEW) {
