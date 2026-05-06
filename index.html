@@ -1102,7 +1102,11 @@
         function printReport(dataToPrint) {
             if (!dataToPrint || dataToPrint.length === 0) return notify('Tidak ada data untuk dicetak pada filter tersebut', 'warning');
 
-            const kepsek = usersData.find(u => u.role === 'Kepsek') || { nama: '................', nip: '................' };
+            // Pencarian data Kepsek yang lebih kuat
+            let kepsek = usersData.find(u => u.role && u.role.trim().toLowerCase() === 'kepsek');
+            if(!kepsek || !kepsek.nama || kepsek.nama.trim() === '') {
+                kepsek = { nama: '...................................', nip: '...................................' };
+            }
             
             let guruInfoNama = currentUser.nama;
             let guruInfoNip = currentUser.nip;
@@ -1120,7 +1124,7 @@
                         isKepsekFormat = true;
                     }
                 } else {
-                    guruInfoNama = "Semua Guru (Silakan filter guru tertentu terlebih dahulu)";
+                    guruInfoNama = "Semua Guru";
                     guruInfoNip = "-";
                 }
             }
@@ -1140,27 +1144,27 @@
 
             let tableHeader = isKepsekFormat ? `
                 <tr>
-                    <th style="width: 5%;">No</th>
-                    <th style="width: 18%;">Hari/Tanggal</th>
-                    <th style="width: 8%;">Jam Ke</th>
-                    <th>Uraian Kegiatan</th>
-                    <th style="width: 25%;">Dokumentasi</th>
+                    <th style="width: 5%; text-align: center !important;">No</th>
+                    <th style="width: 18%; text-align: center !important;">Hari/Tanggal</th>
+                    <th style="width: 8%; text-align: center !important;">Jam Ke</th>
+                    <th style="text-align: center !important;">Uraian Kegiatan</th>
+                    <th style="width: 25%; text-align: center !important;">Dokumentasi</th>
                 </tr>
             ` : `
                 <tr>
-                    <th rowspan="2" style="width: 4%;">No</th>
-                    <th rowspan="2" style="width: 13%;">Hari /<br>Tanggal</th>
-                    <th rowspan="2" style="width: 6%;">Jam Ke</th>
-                    <th rowspan="2" style="width: 8%;">Kelas</th>
-                    <th rowspan="2">Uraian Kegiatan / Pokok Bahasan</th>
-                    <th colspan="4" style="width: 16%;">Kehadiran Siswa</th>
-                    <th rowspan="2" style="width: 18%;">Dokumentasi</th>
+                    <th rowspan="2" style="width: 4%; text-align: center !important;">No</th>
+                    <th rowspan="2" style="width: 13%; text-align: center !important;">Hari /<br>Tanggal</th>
+                    <th rowspan="2" style="width: 6%; text-align: center !important;">Jam Ke</th>
+                    <th rowspan="2" style="width: 8%; text-align: center !important;">Kelas</th>
+                    <th rowspan="2" style="text-align: center !important;">Uraian Kegiatan / Pokok Bahasan</th>
+                    <th colspan="4" style="width: 16%; text-align: center !important;">Kehadiran Siswa</th>
+                    <th rowspan="2" style="width: 18%; text-align: center !important;">Dokumentasi</th>
                 </tr>
                 <tr>
-                    <th style="background-color: #86efac; width: 4%;">H</th>
-                    <th style="background-color: #fde047; width: 4%;">S</th>
-                    <th style="background-color: #93c5fd; width: 4%;">I</th>
-                    <th style="background-color: #fca5a5; width: 4%;">A</th>
+                    <th style="background-color: #86efac; width: 4%; text-align: center !important;">H</th>
+                    <th style="background-color: #fde047; width: 4%; text-align: center !important;">S</th>
+                    <th style="background-color: #93c5fd; width: 4%; text-align: center !important;">I</th>
+                    <th style="background-color: #fca5a5; width: 4%; text-align: center !important;">A</th>
                 </tr>
             `;
 
@@ -1186,43 +1190,43 @@
                 }
 
                 let rowHTML = "<tr>";
-                rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (index + 1) + "</td>";
-                rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + dateDisplay + "</td>";
+                rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + (index + 1) + "</td>";
+                rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + dateDisplay + "</td>";
 
                 if (isKepsekFormat) {
                     if (isIstirahat) {
-                        rowHTML += "<td colspan='3' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
+                        rowHTML += "<td colspan='3' class='bg-istirahat' style='background-color: #e0f2fe !important; text-align: center !important; vertical-align: middle !important;'>ISTIRAHAT</td></tr>";
                     } else {
-                        rowHTML += "<td class='center' style='vertical-align: middle;'>" + jamList[0] + "</td>";
-                        rowHTML += "<td rowspan='" + rowSpan + "'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='vertical-align: middle;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        rowHTML += "<td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[0] + "</td>";
+                        rowHTML += "<td rowspan='" + rowSpan + "' style='vertical-align: middle !important;'>" + j.uraian + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center' style='vertical-align: middle;'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[k] + "</td></tr>";
                         }
                     }
                 } else {
                     if (isIstirahat) {
-                        rowHTML += "<td colspan='8' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
+                        rowHTML += "<td colspan='8' class='bg-istirahat' style='background-color: #e0f2fe !important; text-align: center !important; vertical-align: middle !important;'>ISTIRAHAT</td></tr>";
                     } else if (isUmum) {
-                        rowHTML += "<td class='center' style='vertical-align: middle;'>" + jamList[0] + "</td>";
-                        rowHTML += "<td colspan='6' rowspan='" + rowSpan + "' class='bg-istirahat' style='background-color: white !important; font-weight: normal; font-style: normal; text-align: left !important; padding-left: 8px; vertical-align: middle;'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='vertical-align: middle;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        rowHTML += "<td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[0] + "</td>";
+                        rowHTML += "<td colspan='6' rowspan='" + rowSpan + "' class='bg-istirahat' style='background-color: white !important; font-weight: normal; font-style: normal; text-align: left !important; padding-left: 8px; vertical-align: middle !important;'>" + j.uraian + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center' style='vertical-align: middle;'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[k] + "</td></tr>";
                         }
                     } else {
-                        rowHTML += "<td class='center' style='vertical-align: middle;'>" + jamList[0] + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.kelas + "</td>";
-                        rowHTML += "<td rowspan='" + rowSpan + "'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.jml_hadir + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_sakit + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_ijin + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_alpha + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='vertical-align: middle;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        rowHTML += "<td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[0] + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.kelas + "</td>";
+                        rowHTML += "<td rowspan='" + rowSpan + "' style='vertical-align: middle !important;'>" + j.uraian + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.jml_hadir + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.abs_sakit + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.abs_ijin + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.abs_alpha + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center' style='vertical-align: middle;'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[k] + "</td></tr>";
                         }
                     }
                 }
@@ -1241,23 +1245,18 @@
                         h2 { text-align: center; text-transform: uppercase; margin: 10px 0 15px 0; font-size: 14pt; font-weight: bold;}
                         table.data { width: 100%; border-collapse: collapse; margin-top: 10px; }
                         table.data th, table.data td { border: 1px solid black; padding: 5px; text-align: left; vertical-align: middle; }
-                        table.data th { text-align: center; font-weight: bold; background-color: #dae8f5; }
+                        table.data th { text-align: center !important; font-weight: bold; background-color: #dae8f5; }
                         .bg-istirahat { text-align: center !important; vertical-align: middle !important; font-weight: bold; font-style: italic; }
-                        .center { text-align: center; vertical-align: middle !important; }
+                        .center { text-align: center !important; vertical-align: middle !important; }
                         .footer { margin-top: 30px; width: 100%; page-break-inside: avoid; }
                         .footer table { border: none !important; width: 100%; }
-                        .footer td { border: none !important; width: 50%; padding-top: 10px; text-align: center; }
+                        .footer td { border: none !important; width: 50%; padding-top: 10px; text-align: center !important; vertical-align: top !important; }
                         img.doc { max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; display: block; margin: 0 auto; }
                     </style>
                 </head>
                 <body>
                     <div class="kop"><img src="${PRINT_KOP}" alt="KOP SURAT DINAS"></div>
                     <h2>JURNAL KEGIATAN BELAJAR MENGAJAR</h2>
-                    
-                    <table style="width: 100%; margin-bottom: 15px; border: none;">
-                        <tr><td style="width: 150px; border: none; padding: 3px 0;">Nama Guru</td><td style="width: 10px; border: none; padding: 3px 0;">:</td><td style="border: none; padding: 3px 0;">${guruInfoNama}</td></tr>
-                        <tr><td style="border: none; padding: 3px 0;">NIP</td><td style="border: none; padding: 3px 0;">:</td><td style="border: none; padding: 3px 0;">${guruInfoNip}</td></tr>
-                    </table>
 
                     <table class="data">
                         <thead>${tableHeader}</thead>
