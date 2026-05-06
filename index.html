@@ -18,8 +18,8 @@
         
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc; /* Lighter background for better contrast */
-            user-select: none; /* Anti Copy */
+            background-color: #f8fafc;
+            user-select: none;
         }
 
         .glass-morphism {
@@ -40,14 +40,9 @@
             box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.4);
         }
 
-        .action-btn {
-            transition: all 0.2s ease;
-        }
-        .action-btn:hover {
-            transform: translateY(-2px);
-        }
+        .action-btn { transition: all 0.2s ease; }
+        .action-btn:hover { transform: translateY(-2px); }
 
-        /* Hide Scrollbar */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -59,7 +54,6 @@
             .print-area { width: 100%; margin: 0; padding: 0; }
         }
         
-        /* Modal Animation */
         .modal-enter { animation: modalIn 0.3s ease-out; }
         @keyframes modalIn {
             from { opacity: 0; transform: scale(0.9); }
@@ -71,8 +65,8 @@
 
     <!-- KONFIGURASI APLIKASI -->
     <script>
-        const IS_PREVIEW = false; // Ubah ke false jika sudah deploy ke Apps Script
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwHvcFs8SYHtGj7SroN4R8nvFUZ-O3FO6_UoB-hpRtPfKCIajvP6m8HyeAAyB9kZZqU/exec"; // Masukkan Web App URL hasil deployment GAS
+        const IS_PREVIEW = false; // Pastikan ini FALSE untuk versi GitHub
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwd8-MLRxpidxWF0CFl_upWAy8do6IucOwFmxTO_p_NaX-4-uiR5KkQS33s49aq46DM/exec"; // Wajib diisi dengan URL Deploy GAS terbaru
         const APP_LOGO = "https://i.imghippo.com/files/RG1026Lg.png";
         const PRINT_KOP = "https://i.imghippo.com/files/tuTX6225pKs.png";
     </script>
@@ -86,7 +80,6 @@
     <div id="app">
         <!-- APP ROUTES (LOGIN / DASHBOARD) -->
         <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900">
-            <!-- Decorative circles -->
             <div class="absolute top-0 left-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
             <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
             
@@ -108,26 +101,27 @@
                     <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-blue-500/30 active:scale-[0.98]">
                         MASUK KE SISTEM
                     </button>
-                    <p class="text-xs text-gray-400 font-medium mt-6 tracking-wide">JAGUAR v2.0 &bull; SMP Negeri 1 Dawan</p>
+                    <!-- TRADEMARK UPDATE -->
+                    <p class="text-xs text-gray-400 font-medium mt-6 tracking-wide leading-relaxed">
+                        JAGUAR v2.0 &bull; SMP Negeri 1 Dawan<br>
+                        <span class="text-gray-500 font-bold">Andhi Asmara hadi @ 2026</span>
+                    </p>
                 </div>
             </div>
         </div>
 
-        <!-- MAIN LAYOUT (Hidden by default) -->
+        <!-- MAIN LAYOUT -->
         <div id="main-layout" class="hidden min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
             <!-- SIDEBAR -->
             <aside id="sidebar" class="w-full md:w-[280px] bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] md:min-h-screen no-print flex flex-col z-40 relative">
                 <div class="p-6 md:p-8 flex flex-col items-center border-b border-gray-100 relative overflow-hidden">
-                    <!-- Accent bg in sidebar profile -->
                     <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-50 to-indigo-50"></div>
                     <img id="user-photo-sidebar" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-white mb-3 shadow-md relative z-10">
                     <h3 id="user-name-sidebar" class="font-bold text-gray-800 text-center relative z-10 text-lg">Nama User</h3>
                     <span id="user-role-badge" class="px-4 py-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 text-[10px] uppercase font-bold rounded-full mt-2 relative z-10 shadow-sm border border-blue-200/50 tracking-wider">Role</span>
                 </div>
                 
-                <nav class="p-4 space-y-1.5 flex-1 overflow-y-auto" id="nav-menu">
-                    <!-- Nav items injected via JS based on role -->
-                </nav>
+                <nav class="p-4 space-y-1.5 flex-1 overflow-y-auto" id="nav-menu"></nav>
 
                 <div class="p-4 border-t border-gray-100 mt-auto bg-gray-50/50">
                     <button onclick="handleLogout()" class="w-full flex items-center justify-center md:justify-start space-x-3 p-3.5 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all font-medium active:scale-[0.98]">
@@ -139,9 +133,7 @@
 
             <!-- CONTENT AREA -->
             <main class="flex-1 p-4 md:p-8 overflow-y-auto w-full">
-                <div id="content-container" class="max-w-7xl mx-auto">
-                    <!-- Page content injected here -->
-                </div>
+                <div id="content-container" class="max-w-7xl mx-auto"></div>
             </main>
         </div>
     </div>
@@ -153,56 +145,33 @@
         let journalsData = [];
         let usersData = [];
         let activePage = 'dashboard';
-        let currentFilteredJournals = []; // Tambahan state untuk data cetak
+        let currentFilteredJournals = []; 
 
-        // --- UTILS AVATAR ---
         const getAvatar = (nama, foto) => {
             if (foto && foto.trim() !== '') return foto;
             return `https://ui-avatars.com/api/?name=${encodeURIComponent(nama || 'User')}&background=eff6ff&color=2563eb&bold=true&rounded=true`;
         };
 
-        // --- DUMMY DATA FOR PREVIEW ---
         const dummyUsers = [
             { nip: 'admin', nama: 'Admin Jaguar', password: 'edudigital', role: 'Admin', foto: '', mapel: '-' },
             { nip: 'kepsek', nama: 'Kepala Sekolah, M.Pd', password: 'edudigital', role: 'Kepsek', foto: '', mapel: '-' },
             { nip: 'guru', nama: 'Guru Aktif, S.Pd', password: 'edudigital', role: 'Guru', foto: '', mapel: 'Matematika' }
         ];
 
-        const dummyJournals = [
-            { 
-                id: '1', tanggal: '2024-05-01', nip_user: 'guru', nama_user: 'Guru Aktif, S.Pd', 
-                jam_mulai: '1', jam_selesai: '3', kelas: '8A', uraian: 'Materi Persamaan Linear Dua Variabel', 
-                jml_hadir: 30, abs_sakit: 1, abs_ijin: 1, abs_alpha: 0, 
-                foto: 'https://via.placeholder.com/150/0000FF/FFFFFF?text=PBM' 
-            },
-            { 
-                id: '2', tanggal: '2024-05-01', nip_user: 'guru', nama_user: 'Guru Aktif, S.Pd', 
-                jam_mulai: '4', jam_selesai: '4', kelas: 'Istirahat', uraian: 'Istirahat', 
-                jml_hadir: 0, abs_sakit: 0, abs_ijin: 0, abs_alpha: 0, foto: '' 
-            },
-            { 
-                id: '3', tanggal: '2024-05-02', nip_user: 'kepsek', nama_user: 'Kepala Sekolah, M.Pd', 
-                jam_mulai: '1', jam_selesai: '2', kelas: 'Umum', uraian: 'Rapat Koordinasi Mingguan', 
-                jml_hadir: 0, abs_sakit: 0, abs_ijin: 0, abs_alpha: 0, 
-                foto: 'https://via.placeholder.com/150/FF0000/FFFFFF?text=RAPAT' 
-            }
-        ];
+        const dummyJournals = [];
 
-        // FIX: INISIALISASI DATA DI AWAL UNTUK MODE PREVIEW
         if(IS_PREVIEW) {
             usersData = [...dummyUsers];
             journalsData = [...dummyJournals];
         }
 
-        // --- SECURITY: ANTI INSPECT ---
         document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; // F12
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; // Ctrl+Shift+I
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; // Ctrl+Shift+J
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; // Ctrl+U
+            if(e.keyCode == 123) return false; 
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; 
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; 
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; 
         };
 
-        // --- UTILS ---
         const showLoader = (show) => {
             const l = document.getElementById('loader');
             show ? l.classList.remove('hidden') : l.classList.add('hidden');
@@ -210,12 +179,7 @@
 
         const notify = (title, icon = 'success') => {
             Swal.fire({
-                title: title,
-                icon: icon,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000
+                title: title, icon: icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000
             });
         };
 
@@ -230,7 +194,7 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        const maxDim = 700; // Disesuaikan untuk target ~25KB
+                        const maxDim = 700; 
                         if (width > height) {
                             if (width > maxDim) { height *= maxDim / width; width = maxDim; }
                         } else {
@@ -240,28 +204,44 @@
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6)); // 0.6 quality for approx 25KB
+                        resolve(canvas.toDataURL('image/jpeg', 0.6)); 
                     };
                 };
             });
         };
 
+        // --- API CALL HANDLER UNTUK GITHUB PAGES ---
+        async function callBackend(action, data) {
+            try {
+                if(!GAS_URL || GAS_URL === "") {
+                    return { status: 'error', message: 'GAS_URL belum diatur. Silakan isi konfigurasi GAS_URL di index.html' };
+                }
+                const response = await fetch(GAS_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: action, data: data }),
+                    redirect: 'follow'
+                });
+                return await response.json();
+            } catch (error) {
+                return { status: 'error', message: 'Gagal terhubung ke server. Detail: ' + error.message };
+            }
+        }
+
         // --- CORE LOGIC ---
         function handleLogin() {
-            // FIX: Tambahkan .trim() untuk memastikan tidak ada spasi yang ikut terketik
             const nip = document.getElementById('login-nip').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
+
+            if(!nip || !pass) return notify('Mohon isi NIP dan Password!', 'warning');
 
             showLoader(true);
 
             if (IS_PREVIEW) {
                 setTimeout(() => {
-                    // FIX: Cari user di usersData yang sudah berisi data upload, bukan dari data dummy
                     const user = usersData.find(u => String(u.nip) === String(nip) && String(u.password) === String(pass));
-                    
                     if (user) {
                         currentUser = user;
-                        // FIX: Hapus kode reset (usersData = [...dummyUsers]) dari sini
                         initApp();
                         notify('Selamat datang, ' + user.nama);
                     } else {
@@ -270,20 +250,18 @@
                     showLoader(false);
                 }, 1000);
             } else {
-                google.script.run
-                    .withSuccessHandler(res => {
-                        showLoader(false);
-                        if(res.status === 'success') {
-                            currentUser = res.user;
-                            journalsData = res.journals;
-                            usersData = res.users;
-                            initApp();
-                            notify('Selamat datang, ' + currentUser.nama);
-                        } else {
-                            notify(res.message, 'error');
-                        }
-                    })
-                    .login(nip, pass);
+                callBackend('login', { nip: nip, password: pass }).then(res => {
+                    showLoader(false);
+                    if(res.status === 'success') {
+                        currentUser = res.user;
+                        journalsData = res.journals;
+                        usersData = res.users;
+                        initApp();
+                        notify('Selamat datang, ' + currentUser.nama);
+                    } else {
+                        notify(res.message, 'error');
+                    }
+                });
             }
         }
 
@@ -302,8 +280,6 @@
                     currentUser = null;
                     document.getElementById('login-screen').classList.remove('hidden');
                     document.getElementById('main-layout').classList.add('hidden');
-                    
-                    // Clear inputs
                     document.getElementById('login-nip').value = '';
                     document.getElementById('login-pass').value = '';
                 }
@@ -314,7 +290,6 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-layout').classList.remove('hidden');
             
-            // Update Sidebar Profile
             document.getElementById('user-photo-sidebar').src = getAvatar(currentUser.nama, currentUser.foto);
             document.getElementById('user-name-sidebar').innerText = currentUser.nama;
             document.getElementById('user-role-badge').innerText = currentUser.role;
@@ -325,19 +300,15 @@
 
         function renderMenu() {
             const menuEl = document.getElementById('nav-menu');
-            let menus = [
-                { id: 'dashboard', label: 'Dashboard Utama', icon: 'fa-chart-pie' }
-            ];
+            let menus = [ { id: 'dashboard', label: 'Dashboard Utama', icon: 'fa-chart-pie' } ];
 
             if (currentUser.role === 'Admin') {
                 menus.push({ id: 'manage-users', label: 'Kelola Anggota', icon: 'fa-users-cog' });
             }
-            
             if (currentUser.role === 'Guru' || currentUser.role === 'Kepsek') {
                 const labelInput = currentUser.role === 'Kepsek' ? 'Isi Jurnal Kepsek' : 'Isi Jurnal Baru';
                 menus.push({ id: 'input-jurnal', label: labelInput, icon: 'fa-pen-to-square' });
             }
-
             menus.push({ id: 'profile', label: 'Pengaturan Profil', icon: 'fa-user-shield' });
 
             menuEl.innerHTML = menus.map(m => `
@@ -354,35 +325,27 @@
             activePage = page;
             const container = document.getElementById('content-container');
             
-            // UI Active State
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('sidebar-item-active'));
             const activeBtn = document.getElementById('btn-' + page);
             if(activeBtn) activeBtn.classList.add('sidebar-item-active');
 
-            // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
-            if (page === 'dashboard') {
-                renderDashboard(container);
-            } else if (page === 'input-jurnal') {
-                renderInputJurnal(container);
-            } else if (page === 'manage-users') {
-                renderManageUsers(container);
-            } else if (page === 'profile') {
-                renderProfile(container);
-            }
+            if (page === 'dashboard') renderDashboard(container);
+            else if (page === 'input-jurnal') renderInputJurnal(container);
+            else if (page === 'manage-users') renderManageUsers(container);
+            else if (page === 'profile') renderProfile(container);
         }
 
         // --- DASHBOARD RENDERER ---
         function renderDashboard(container) {
             let dataToShow = journalsData;
             
-            // Role Based Visibility
             if(currentUser.role === 'Guru') {
                 dataToShow = journalsData.filter(j => j.nip_user === currentUser.nip);
             }
 
-            currentFilteredJournals = dataToShow; // Inisialisasi data filter
+            currentFilteredJournals = dataToShow; 
 
             container.innerHTML = `
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -402,29 +365,21 @@
                     </div>
                 </div>
 
-                <!-- FILTER BOX BARU: GRID RESPONSIVE -->
                 <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm mb-6 border border-gray-100 relative overflow-hidden">
-                    <!-- Accent line di bagian atas filter -->
                     <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
-                    
                     <div class="flex items-center gap-2 mb-4">
                         <i class="fas fa-filter text-blue-500 bg-blue-50 p-2 rounded-lg text-sm"></i>
                         <h3 class="font-bold text-gray-700 text-sm">Filter Pencarian</h3>
                     </div>
-
                     <div class="grid grid-cols-1 sm:grid-cols-2 ${currentUser.role === 'Guru' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-4 items-end">
-                        <!-- Kolom 1: Dari Tanggal -->
                         <div>
                             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Dari Tanggal</label>
                             <input type="date" id="filter-start" class="w-full p-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
                         </div>
-                        <!-- Kolom 2: Samp Tanggal -->
                         <div>
                             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Sampai Tanggal</label>
                             <input type="date" id="filter-end" class="w-full p-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
                         </div>
-                        
-                        <!-- Kolom 3: Nama Guru (HANYA MUNCUL JIKA BUKAN GURU) -->
                         ${currentUser.role !== 'Guru' ? `
                         <div>
                             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Nama Guru</label>
@@ -434,15 +389,9 @@
                             </div>
                         </div>
                         ` : ''}
-
-                        <!-- Kolom 4/3: Tombol Aksi -->
                         <div class="flex gap-2">
-                            <button onclick="applyFilters()" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl hover:bg-blue-700 transition font-semibold shadow-md shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-2 text-sm">
-                                Terapkan
-                            </button>
-                            <button onclick="resetFilters()" class="flex-1 bg-white text-gray-600 py-2.5 rounded-xl hover:bg-gray-50 transition font-semibold active:scale-95 border border-gray-200 flex items-center justify-center gap-2 text-sm">
-                                Reset
-                            </button>
+                            <button onclick="applyFilters()" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl hover:bg-blue-700 transition font-semibold shadow-md shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-2 text-sm">Terapkan</button>
+                            <button onclick="resetFilters()" class="flex-1 bg-white text-gray-600 py-2.5 rounded-xl hover:bg-gray-50 transition font-semibold active:scale-95 border border-gray-200 flex items-center justify-center gap-2 text-sm">Reset</button>
                         </div>
                     </div>
                 </div>
@@ -528,21 +477,15 @@
 
         function previewImage(src) {
             Swal.fire({
-                imageUrl: src,
-                imageAlt: 'Dokumentasi Jurnal',
-                showConfirmButton: false,
-                width: 'auto',
-                background: 'transparent',
-                backdrop: 'rgba(0,0,0,0.8)',
+                imageUrl: src, imageAlt: 'Dokumentasi', showConfirmButton: false, width: 'auto',
+                background: 'transparent', backdrop: 'rgba(0,0,0,0.8)',
                 customClass: { image: 'rounded-2xl max-w-full max-h-[85vh] object-contain' }
             });
         }
 
-        // --- FILTER LOGIC ---
         function applyFilters() {
             const start = document.getElementById('filter-start').value;
             const end = document.getElementById('filter-end').value;
-            // Gunakan optional chaining karena filter nama guru disembunyikan untuk role Guru
             const nameInput = document.getElementById('filter-name');
             const name = nameInput ? nameInput.value.toLowerCase() : '';
 
@@ -553,7 +496,7 @@
             if(end) filtered = filtered.filter(j => j.tanggal <= end);
             if(name) filtered = filtered.filter(j => j.nama_user.toLowerCase().includes(name));
 
-            currentFilteredJournals = filtered; // Simpan untuk fungsi cetak
+            currentFilteredJournals = filtered; 
             document.getElementById('journal-list-body').innerHTML = renderJournalRows(filtered);
         }
 
@@ -694,7 +637,7 @@
                 </div>
             `;
             document.getElementById('f-tgl').valueAsDate = new Date();
-            setTimeout(() => handleKelasChange(), 50); // Set visibilitas awal
+            setTimeout(() => handleKelasChange(), 50); 
         }
 
         function handleKelasChange() {
@@ -743,7 +686,6 @@
                 foto: document.getElementById('f-foto-img')?.src || ''
             };
 
-            // Ambil data absensi hanya jika fieldnya tidak di-hidden (kelas selain Umum dan Istirahat)
             if(currentUser.role === 'Guru' && data.kelas !== 'Istirahat' && data.kelas !== 'Umum') {
                 data.jml_hadir = document.getElementById('f-hadir').value;
                 data.abs_sakit = document.getElementById('f-sakit').value;
@@ -761,22 +703,19 @@
                     resetFormInputJurnal();
                 }, 1000);
             } else {
-                google.script.run
-                    .withSuccessHandler(res => {
-                        showLoader(false);
-                        if(res.status === 'success') {
-                            journalsData = res.journals;
-                            notify('Jurnal berhasil disimpan!');
-                            resetFormInputJurnal();
-                        } else {
-                            notify(res.message, 'error');
-                        }
-                    })
-                    .saveJournal(data);
+                callBackend('saveJournal', { jurnalData: data }).then(res => {
+                    showLoader(false);
+                    if(res.status === 'success') {
+                        journalsData = res.journals;
+                        notify('Jurnal berhasil disimpan!');
+                        resetFormInputJurnal();
+                    } else {
+                        notify(res.message, 'error');
+                    }
+                });
             }
         }
 
-        // Fungsi bantuan untuk me-reset form tanpa kembali ke dashboard
         function resetFormInputJurnal() {
             document.getElementById('journal-form').reset();
             document.getElementById('f-tgl').valueAsDate = new Date();
@@ -939,12 +878,16 @@
                         renderPage('manage-users');
                     }, 1000);
                 } else {
-                    google.script.run.withSuccessHandler(res => {
+                    callBackend('saveUser', { userData: formValues }).then(res => {
                         showLoader(false);
-                        usersData = res.users;
-                        renderPage('manage-users');
-                        notify('Berhasil!');
-                    }).saveUser(formValues);
+                        if(res.status === 'success') {
+                            usersData = res.users;
+                            renderPage('manage-users');
+                            notify('Berhasil disimpan!');
+                        } else {
+                            notify(res.message, 'error');
+                        }
+                    });
                 }
             }
         }
@@ -1017,7 +960,6 @@
             if(IS_PREVIEW) {
                 setTimeout(() => {
                     currentUser = newData;
-                    // Update user in dummy list
                     const idx = usersData.findIndex(u => u.nip === currentUser.nip);
                     if(idx !== -1) usersData[idx] = newData;
                     
@@ -1026,12 +968,17 @@
                     notify('Profil berhasil diperbarui!');
                 }, 1000);
             } else {
-                google.script.run.withSuccessHandler(res => {
+                callBackend('saveUser', { userData: newData }).then(res => {
                     showLoader(false);
-                    currentUser = res.user;
-                    initApp();
-                    notify('Berhasil diperbarui!');
-                }).saveUser(newData);
+                    if(res.status === 'success') {
+                        currentUser = newData; 
+                        usersData = res.users;
+                        initApp();
+                        notify('Berhasil diperbarui!');
+                    } else {
+                        notify(res.message, 'error');
+                    }
+                });
             }
         }
 
@@ -1111,13 +1058,10 @@
 
             const kepsek = usersData.find(u => u.role === 'Kepsek') || { nama: '................', nip: '................' };
             
-            // Logika Penentuan Informasi Guru pada Header Cetak
             let guruInfoNama = currentUser.nama;
             let guruInfoNip = currentUser.nip;
-            
             let isKepsekFormat = false;
             
-            // Cek apakah data ini menggunakan format Kepsek
             if (currentUser.role === 'Kepsek') {
                 isKepsekFormat = true;
             } else if (currentUser.role === 'Admin') {
@@ -1125,7 +1069,6 @@
                 if (uniqueGurus.length === 1) {
                     guruInfoNama = dataToPrint[0].nama_user;
                     guruInfoNip = dataToPrint[0].nip_user;
-                    // Jika satu guru terpilih dan dia adalah Kepsek, gunakan format kepsek
                     const targetUser = usersData.find(u => u.nip === uniqueGurus[0]);
                     if (targetUser && targetUser.role === 'Kepsek') {
                         isKepsekFormat = true;
@@ -1138,20 +1081,17 @@
 
             const printWin = window.open('', '_blank');
             
-            // Sort ascending dari tanggal terlama ke terbaru DAN jam ke- terkecil
             const sortedData = [...dataToPrint].sort((a, b) => {
                 const dateA = new Date(a.tanggal);
                 const dateB = new Date(b.tanggal);
                 if (dateA < dateB) return -1;
                 if (dateA > dateB) return 1;
                 
-                // Jika tanggal sama, urutkan berdasarkan jam mulai
                 const jamA = parseInt(a.jam_mulai) || 0;
                 const jamB = parseInt(b.jam_mulai) || 0;
                 return jamA - jamB;
             });
 
-            // Menyusun Header Tabel Berdasarkan Format (Guru vs Kepsek)
             let tableHeader = isKepsekFormat ? `
                 <tr>
                     <th style="width: 5%;">No</th>
@@ -1178,7 +1118,6 @@
                 </tr>
             `;
 
-            // Menyusun Baris Tabel Secara Konvensional untuk Menghindari SyntaxError
             let tableRows = "";
             sortedData.forEach((j, index) => {
                 const isIstirahat = j.kelas === 'Istirahat';
@@ -1251,7 +1190,7 @@
                         h2 { text-align: center; text-transform: uppercase; margin: 10px 0 15px 0; font-size: 14pt; font-weight: bold;}
                         table.data { width: 100%; border-collapse: collapse; margin-top: 10px; }
                         table.data th, table.data td { border: 1px solid black; padding: 5px; text-align: left; vertical-align: middle; }
-                        table.data th { text-align: center; font-weight: bold; background-color: #dae8f5; } /* Menggunakan warna biru muda sesuai contoh */
+                        table.data th { text-align: center; font-weight: bold; background-color: #dae8f5; }
                         .bg-istirahat { text-align: center !important; vertical-align: middle !important; font-weight: bold; font-style: italic; }
                         .center { text-align: center; }
                         .footer { margin-top: 30px; width: 100%; page-break-inside: avoid; }
@@ -1293,8 +1232,7 @@
         function openPrintPreview(id) {
             const j = journalsData.find(item => item.id === id);
             if(!j) return;
-
-            printReport([j]); // Menggunakan fungsi printReport langsung agar logika konsisten
+            printReport([j]);
         }
 
         async function handleBulkDelete() {
@@ -1372,7 +1310,6 @@
                 const sheet = workbook.Sheets[workbook.SheetNames[0]];
                 const rows = XLSX.utils.sheet_to_json(sheet);
                 
-                // Map rows to users structure
                 const newUsers = rows.map(r => ({
                     nip: String(r.NIP || r.nip || '').trim(),
                     nama: String(r.Nama || r.nama || '').trim(),
@@ -1392,8 +1329,7 @@
                             notify(`Berhasil mengunggah ${newUsers.length} user (Preview)!`);
                         }, 1000);
                     } else {
-                        // Mengirim data kolektif ke backend GAS
-                        google.script.run.withSuccessHandler(res => {
+                        callBackend('saveUsersBulkGAS', { newUsersArray: newUsers }).then(res => {
                             showLoader(false);
                             if(res.status === 'success') {
                                 usersData = res.users;
@@ -1402,17 +1338,16 @@
                             } else {
                                 notify('Gagal menyimpan ke database: ' + res.message, 'error');
                             }
-                        }).saveUsersBulkGAS(newUsers);
+                        });
                     }
                 } else {
                     notify('Tidak ada data valid yang ditemukan di Excel.', 'warning');
                 }
             };
             reader.readAsArrayBuffer(file);
-            input.value = ''; // Reset input agar bisa upload file yang sama lagi
+            input.value = ''; 
         }
 
-        // --- DELETE USERS LOGIC ---
         function deleteUser(nip) {
             Swal.fire({
                 title: 'Hapus User?',
@@ -1433,7 +1368,7 @@
                             renderPage('manage-users');
                         }, 1000);
                     } else {
-                        google.script.run.withSuccessHandler(res => {
+                        callBackend('deleteUserGAS', { nip: nip }).then(res => {
                             showLoader(false);
                             if(res.status === 'success') {
                                 usersData = res.users;
@@ -1442,7 +1377,7 @@
                             } else {
                                 notify(res.message, 'error');
                             }
-                        }).deleteUserGAS(nip);
+                        });
                     }
                 }
             });
@@ -1462,14 +1397,13 @@
                     showLoader(true);
                     if (IS_PREVIEW) {
                         setTimeout(() => {
-                            // Filter: Hanya sisakan akun yang sedang login
                             usersData = usersData.filter(u => u.nip === currentUser.nip);
                             showLoader(false);
                             notify('Semua user lain berhasil dihapus');
                             renderPage('manage-users');
                         }, 1000);
                     } else {
-                        google.script.run.withSuccessHandler(res => {
+                        callBackend('deleteAllUsersGAS', { currentAdminNip: currentUser.nip }).then(res => {
                             showLoader(false);
                             if(res.status === 'success') {
                                 usersData = res.users;
@@ -1478,13 +1412,12 @@
                             } else {
                                 notify(res.message, 'error');
                             }
-                        }).deleteAllUsersGAS(currentUser.nip);
+                        });
                     }
                 }
             });
         }
 
-        // Initialize empty app if not preview
         if(!IS_PREVIEW) {
             document.addEventListener('DOMContentLoaded', () => {
                 // Initial check logic
