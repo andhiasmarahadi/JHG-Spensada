@@ -1102,8 +1102,7 @@
         function printReport(dataToPrint) {
             if (!dataToPrint || dataToPrint.length === 0) return notify('Tidak ada data untuk dicetak pada filter tersebut', 'warning');
 
-            // Pencarian data Kepsek yang lebih kuat
-            let kepsek = usersData.find(u => u.role && u.role.trim().toLowerCase() === 'kepsek');
+            let kepsek = usersData.find(u => u.role === 'Kepsek' || (u.role && u.role.toLowerCase() === 'kepsek'));
             if(!kepsek || !kepsek.nama || kepsek.nama.trim() === '') {
                 kepsek = { nama: '...................................', nip: '...................................' };
             }
@@ -1190,43 +1189,43 @@
                 }
 
                 let rowHTML = "<tr>";
-                rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + (index + 1) + "</td>";
-                rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + dateDisplay + "</td>";
+                rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (index + 1) + "</td>";
+                rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + dateDisplay + "</td>";
 
                 if (isKepsekFormat) {
                     if (isIstirahat) {
-                        rowHTML += "<td colspan='3' class='bg-istirahat' style='background-color: #e0f2fe !important; text-align: center !important; vertical-align: middle !important;'>ISTIRAHAT</td></tr>";
+                        rowHTML += "<td colspan='3' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
                     } else {
-                        rowHTML += "<td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[0] + "</td>";
-                        rowHTML += "<td rowspan='" + rowSpan + "' style='vertical-align: middle !important;'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
+                        rowHTML += "<td rowspan='" + rowSpan + "' style='vertical-align: middle !important; padding-left: 8px;'>" + j.uraian + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
                         }
                     }
                 } else {
                     if (isIstirahat) {
-                        rowHTML += "<td colspan='8' class='bg-istirahat' style='background-color: #e0f2fe !important; text-align: center !important; vertical-align: middle !important;'>ISTIRAHAT</td></tr>";
+                        rowHTML += "<td colspan='8' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
                     } else if (isUmum) {
-                        rowHTML += "<td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[0] + "</td>";
+                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
                         rowHTML += "<td colspan='6' rowspan='" + rowSpan + "' class='bg-istirahat' style='background-color: white !important; font-weight: normal; font-style: normal; text-align: left !important; padding-left: 8px; vertical-align: middle !important;'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
                         }
                     } else {
-                        rowHTML += "<td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[0] + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.kelas + "</td>";
-                        rowHTML += "<td rowspan='" + rowSpan + "' style='vertical-align: middle !important;'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.jml_hadir + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.abs_sakit + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.abs_ijin + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + j.abs_alpha + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='text-align: center !important; vertical-align: middle !important;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.kelas + "</td>";
+                        rowHTML += "<td rowspan='" + rowSpan + "' style='vertical-align: middle !important; padding-left: 8px;'>" + j.uraian + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.jml_hadir + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_sakit + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_ijin + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_alpha + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center' style='text-align: center !important; vertical-align: middle !important;'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
                         }
                     }
                 }
