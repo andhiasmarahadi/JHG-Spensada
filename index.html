@@ -1102,10 +1102,8 @@
         function printReport(dataToPrint) {
             if (!dataToPrint || dataToPrint.length === 0) return notify('Tidak ada data untuk dicetak pada filter tersebut', 'warning');
 
-            let kepsek = usersData.find(u => u.role === 'Kepsek' || (u.role && u.role.toLowerCase() === 'kepsek'));
-            if(!kepsek || !kepsek.nama || kepsek.nama.trim() === '') {
-                kepsek = { nama: '...................................', nip: '...................................' };
-            }
+            // KETIK PAKSA DATA KEPALA SEKOLAH
+            const kepsek = { nama: 'Ni Kadek Yadnyani, S.Pd', nip: '197910162006042006' };
             
             let guruInfoNama = currentUser.nama;
             let guruInfoNip = currentUser.nip;
@@ -1141,6 +1139,24 @@
                 return jamA - jamB;
             });
 
+            // MENGHITUNG ROWSPAN UNTUK MERGE KOLOM HARI/TANGGAL
+            let dateSpans = {};
+            sortedData.forEach(j => {
+                const isIstirahat = j.kelas === 'Istirahat';
+                let rSpan = 1;
+                if (!isNaN(j.jam_mulai) && !isNaN(j.jam_selesai)) {
+                    let start = parseInt(j.jam_mulai);
+                    let end = parseInt(j.jam_selesai);
+                    if (end >= start && !isIstirahat) {
+                        rSpan = end - start + 1;
+                    }
+                }
+                j.calculatedRowSpan = rSpan; // Simpan kalkulasi rowspan untuk entry ini
+
+                if(!dateSpans[j.tanggal]) dateSpans[j.tanggal] = 0;
+                dateSpans[j.tanggal] += rSpan; // Tambahkan total rowspan per tanggal
+            });
+
             let tableHeader = isKepsekFormat ? `
                 <tr>
                     <th style="width: 5%; text-align: center !important;">No</th>
@@ -1168,6 +1184,8 @@
             `;
 
             let tableRows = "";
+            let processedDates = {}; // Track tanggal yang sudah dibuat rowspan-nya
+
             sortedData.forEach((j, index) => {
                 const isIstirahat = j.kelas === 'Istirahat';
                 const isUmum = j.kelas === 'Umum';
@@ -1176,21 +1194,24 @@
                 const dateStr = new Date(j.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
                 const dateDisplay = dayStr + ",<br>" + dateStr;
                 
-                let rowSpan = 1;
+                let rowSpan = j.calculatedRowSpan;
                 let jamList = [j.jam_mulai];
-                if (!isNaN(j.jam_mulai) && !isNaN(j.jam_selesai)) {
+                if (rowSpan > 1) {
                     let start = parseInt(j.jam_mulai);
                     let end = parseInt(j.jam_selesai);
-                    if (end >= start && !isIstirahat) {
-                        rowSpan = end - start + 1;
-                        jamList = [];
-                        for(let k = start; k <= end; k++) jamList.push(k);
-                    }
+                    jamList = [];
+                    for(let k = start; k <= end; k++) jamList.push(k);
                 }
 
                 let rowHTML = "<tr>";
+                // Gunakan class .center (rata tengah dan posisi di tengah vertikal)
                 rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (index + 1) + "</td>";
-                rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + dateDisplay + "</td>";
+                
+                // JIKA TANGGAL BELUM PERNAH DICETAK, BUAT TD DENGAN ROWSPAN TOTAL HARI ITU
+                if (!processedDates[j.tanggal]) {
+                    rowHTML += "<td class='center' rowspan='" + dateSpans[j.tanggal] + "'>" + dateDisplay + "</td>";
+                    processedDates[j.tanggal] = true;
+                }
 
                 if (isKepsekFormat) {
                     if (isIstirahat) {
@@ -1241,7 +1262,7 @@
                         body { font-family: 'Times New Roman', serif; font-size: 10pt; line-height: 1.3; color: black; }
                         .kop { text-align: center; margin-bottom: 15px; width: 100%; }
                         .kop img { width: 100%; height: auto; display: block; object-fit: contain; }
-                        h2 { text-align: center; text-transform: uppercase; margin: 10px 0 15px 0; font-size: 14pt; font-weight: bold;}
+                        h2 { text-align: center; text-transform: uppercase; margin: 10px 0 25px 0; font-size: 14pt; font-weight: bold;}
                         table.data { width: 100%; border-collapse: collapse; margin-top: 10px; }
                         table.data th, table.data td { border: 1px solid black; padding: 5px; text-align: left; vertical-align: middle; }
                         table.data th { text-align: center !important; font-weight: bold; background-color: #dae8f5; }
@@ -1266,7 +1287,7 @@
                         <table>
                             <tr>
                                 <td>Mengetahui,<br>Kepala SMP Negeri 1 Dawan<br><br><br><br><br><b><u>${kepsek.nama}</u></b><br>NIP. ${kepsek.nip}</td>
-                                <td>Dawan, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}<br>Guru Mata Pelajaran<br><br><br><br><br><b><u>${guruInfoNama}</u></b><br>NIP. ${guruInfoNip}</td>
+                                <td>Dawan, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}<br>Guru Mata Pelajaran<br><br><br><br><br><b><u>${guruInfoNama}</u></b><br>${guruInfoNip !== '-' ? 'NIP. ' + guruInfoNip : ''}</td>
                             </tr>
                         </table>
                     </div>
