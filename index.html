@@ -170,8 +170,8 @@
 
         const getAvatar = (nama, foto) => {
             // Validasi cerdas: Gunakan foto hanya jika valid (bukan kosong, bukan placeholder lama, bukan avatar generate)
-            if (foto && foto.trim() !== '' && !foto.includes('via.placeholder.com') && !foto.includes('ui-avatars.com')) {
-                return foto;
+            if (foto && typeof foto === 'string' && foto.trim() !== '' && !foto.includes('via.placeholder.com') && !foto.includes('ui-avatars.com')) {
+                return foto.trim();
             }
             return `https://ui-avatars.com/api/?name=${encodeURIComponent(nama || 'User')}&background=eff6ff&color=2563eb&bold=true&rounded=true`;
         };
@@ -218,7 +218,7 @@
                         const canvas = document.createElement('canvas');
                         let width = img.width;
                         let height = img.height;
-                        const maxDim = 700; 
+                        const maxDim = 400; // Disesuaikan agar kode base64 tidak melebihi 50,000 karakter Google Sheets
                         if (width > height) {
                             if (width > maxDim) { height *= maxDim / width; width = maxDim; }
                         } else {
@@ -228,7 +228,7 @@
                         canvas.height = height;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.6)); 
+                        resolve(canvas.toDataURL('image/jpeg', 0.5)); // Quality disesuaikan menjadi 0.5 agar aman tersimpan
                     };
                 };
             });
@@ -920,6 +920,11 @@
                         showLoader(false);
                         if(res.status === 'success') {
                             usersData = res.users;
+                            // Update sidebar jika yang diedit adalah profil admin yang sedang login
+                            if (currentUser && currentUser.nip === formValues.nip) {
+                                currentUser = formValues;
+                                initApp();
+                            }
                             renderPage('manage-users');
                             notify('Berhasil disimpan!');
                         } else {
@@ -1201,8 +1206,14 @@
                     if (isIstirahat) {
                         rowHTML += "<td colspan='8' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
                     } else if (isUmum) {
-                        rowHTML += "<td colspan='7' class='bg-istirahat' style='background-color: white !important; font-weight: normal; font-style: normal; text-align: left !important;'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' style='vertical-align: middle;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        // Jurnal UMUM: Menampilkan Jam, Menggabungkan Kelas s.d Absensi, Menampilkan Dokumentasi
+                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
+                        rowHTML += "<td colspan='6' rowspan='" + rowSpan + "' class='bg-istirahat' style='background-color: white !important; font-weight: normal; font-style: normal; text-align: left !important; padding-left: 8px; vertical-align: middle;'>" + j.uraian + "</td>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='vertical-align: middle;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        
+                        for (let k = 1; k < jamList.length; k++) {
+                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
+                        }
                     } else {
                         rowHTML += "<td class='center'>" + jamList[0] + "</td>";
                         rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.kelas + "</td>";
