@@ -66,7 +66,7 @@
     <!-- KONFIGURASI APLIKASI -->
     <script>
         const IS_PREVIEW = false; // Pastikan ini FALSE untuk versi GitHub
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyKbKTexzYEip0Tq8x9i_PuStoYeptS9mErNbVb0g8KmRB6RkWE2Aost2lHdsUxBw4u/exec"; // Wajib diisi dengan URL Deploy GAS terbaru
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwK_S0makoiFDxnvuqVqwaKSJUR4YAexuuHqqZjJY7VRG4omyo2CXKqCmAuaF64COmu/exec"; // Wajib diisi dengan URL Deploy GAS terbaru
         const APP_LOGO = "https://i.imghippo.com/files/RG1026Lg.png";
         const PRINT_KOP = "https://i.imghippo.com/files/tuTX6225pKs.png";
     </script>
@@ -169,7 +169,6 @@
         let currentFilteredJournals = []; 
 
         const getAvatar = (nama, foto) => {
-            // Perbaikan deteksi Base64 agar foto valid pasti digunakan
             if (foto && typeof foto === 'string' && foto.startsWith('data:image')) {
                 return foto;
             }
@@ -210,7 +209,6 @@
             });
         };
 
-        // Tambahan Parameter "isAvatar" agar kompresi foto profil dikecilkan ekstrim (menghindari error Google Sheets)
         const compressImage = async (file, isAvatar = false) => {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -223,7 +221,6 @@
                         let width = img.width;
                         let height = img.height;
                         
-                        // Jika untuk avatar, set ukuran kecil (max 200px), jika jurnal max 400px
                         const maxDim = isAvatar ? 200 : 400; 
                         
                         if (width > height) {
@@ -321,12 +318,10 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-layout').classList.remove('hidden');
             
-            // Desktop Profile
             document.getElementById('user-photo-sidebar').src = getAvatar(currentUser.nama, currentUser.foto);
             document.getElementById('user-name-sidebar').innerText = currentUser.nama;
             document.getElementById('user-role-badge').innerText = currentUser.role;
 
-            // Mobile Profile
             const mobilePhoto = document.getElementById('mobile-user-photo');
             if(mobilePhoto) mobilePhoto.src = getAvatar(currentUser.nama, currentUser.foto);
             const mobileName = document.getElementById('mobile-user-name');
@@ -351,7 +346,6 @@
             }
             menus.push({ id: 'profile', label: 'Pengaturan Profil', icon: 'fa-user-shield' });
 
-            // Layout navigasi responsif (Icon-only untuk mobile)
             menuEl.innerHTML = menus.map(m => `
                 <button onclick="renderPage('${m.id}')" id="btn-${m.id}" title="${m.label}" class="flex-1 md:w-full flex items-center justify-center md:justify-start space-x-0 md:space-x-3 p-2 md:p-3.5 text-gray-500 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all duration-300 nav-btn font-medium active:scale-[0.98]">
                     <div class="w-10 h-10 md:w-8 md:h-8 rounded-xl md:rounded-lg flex items-center justify-center bg-transparent md:bg-gray-100 text-current md:text-gray-500 icon-container transition-colors">
@@ -704,7 +698,7 @@
             if (input.files && input.files[0]) {
                 const container = document.getElementById('foto-preview-container');
                 const img = document.getElementById('f-foto-img');
-                const base64 = await compressImage(input.files[0], false); // Foto Jurnal (Bukan Avatar)
+                const base64 = await compressImage(input.files[0], false); 
                 img.src = base64;
                 container.classList.remove('hidden');
             }
@@ -891,7 +885,6 @@
                 },
                 buttonsStyling: false,
                 preConfirm: () => {
-                    // Cek apakah img preview adalah file baru (base64) atau sekadar avatar generate
                     const imgSrc = document.getElementById('swal-img-preview').src;
                     const finalFoto = imgSrc.startsWith('data:image') ? imgSrc : user.foto;
 
@@ -927,7 +920,6 @@
                         showLoader(false);
                         if(res.status === 'success') {
                             usersData = res.users;
-                            // Update sidebar jika yang diedit adalah profil admin yang sedang login
                             if (currentUser && currentUser.nip === formValues.nip) {
                                 currentUser = formValues;
                                 initApp();
@@ -946,7 +938,7 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = async (e) => {
-                    const compressed = await compressImage(input.files[0], true); // Khusus Avatar
+                    const compressed = await compressImage(input.files[0], true); 
                     document.getElementById('swal-img-preview').src = compressed;
                 };
                 reader.readAsDataURL(input.files[0]);
@@ -993,7 +985,7 @@
 
         async function previewProfilePhoto(input) {
             if (input.files && input.files[0]) {
-                const base64 = await compressImage(input.files[0], true); // Khusus Avatar
+                const base64 = await compressImage(input.files[0], true); 
                 document.getElementById('p-foto-preview').src = base64;
             }
         }
@@ -1001,7 +993,6 @@
         function updateProfile() {
             showLoader(true);
             
-            // Cek apakah ada foto baru yang diunggah (base64) atau pakai data yang lama
             const imgPreviewSrc = document.getElementById('p-foto-preview').src;
             const finalFoto = imgPreviewSrc.startsWith('data:image') ? imgPreviewSrc : currentUser.foto;
 
@@ -1187,7 +1178,7 @@
                 if (!isNaN(j.jam_mulai) && !isNaN(j.jam_selesai)) {
                     let start = parseInt(j.jam_mulai);
                     let end = parseInt(j.jam_selesai);
-                    if (end >= start && !isIstirahat && !isUmum) {
+                    if (end >= start && !isIstirahat) {
                         rowSpan = end - start + 1;
                         jamList = [];
                         for(let k = start; k <= end; k++) jamList.push(k);
@@ -1202,37 +1193,36 @@
                     if (isIstirahat) {
                         rowHTML += "<td colspan='3' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
                     } else {
-                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
+                        rowHTML += "<td class='center' style='vertical-align: middle;'>" + jamList[0] + "</td>";
                         rowHTML += "<td rowspan='" + rowSpan + "'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='vertical-align: middle;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center' style='vertical-align: middle;'>" + jamList[k] + "</td></tr>";
                         }
                     }
                 } else {
                     if (isIstirahat) {
                         rowHTML += "<td colspan='8' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
                     } else if (isUmum) {
-                        // Jurnal UMUM: Menampilkan Jam, Menggabungkan Kelas s.d Absensi, Menampilkan Dokumentasi
-                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
+                        rowHTML += "<td class='center' style='vertical-align: middle;'>" + jamList[0] + "</td>";
                         rowHTML += "<td colspan='6' rowspan='" + rowSpan + "' class='bg-istirahat' style='background-color: white !important; font-weight: normal; font-style: normal; text-align: left !important; padding-left: 8px; vertical-align: middle;'>" + j.uraian + "</td>";
                         rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='vertical-align: middle;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center' style='vertical-align: middle;'>" + jamList[k] + "</td></tr>";
                         }
                     } else {
-                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
+                        rowHTML += "<td class='center' style='vertical-align: middle;'>" + jamList[0] + "</td>";
                         rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.kelas + "</td>";
                         rowHTML += "<td rowspan='" + rowSpan + "'>" + j.uraian + "</td>";
                         rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.jml_hadir + "</td>";
                         rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_sakit + "</td>";
                         rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_ijin + "</td>";
                         rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_alpha + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
+                        rowHTML += "<td class='center' rowspan='" + rowSpan + "' style='vertical-align: middle;'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
                         
                         for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
+                            rowHTML += "<tr><td class='center' style='vertical-align: middle;'>" + jamList[k] + "</td></tr>";
                         }
                     }
                 }
@@ -1253,7 +1243,7 @@
                         table.data th, table.data td { border: 1px solid black; padding: 5px; text-align: left; vertical-align: middle; }
                         table.data th { text-align: center; font-weight: bold; background-color: #dae8f5; }
                         .bg-istirahat { text-align: center !important; vertical-align: middle !important; font-weight: bold; font-style: italic; }
-                        .center { text-align: center; }
+                        .center { text-align: center; vertical-align: middle !important; }
                         .footer { margin-top: 30px; width: 100%; page-break-inside: avoid; }
                         .footer table { border: none !important; width: 100%; }
                         .footer td { border: none !important; width: 50%; padding-top: 10px; text-align: center; }
