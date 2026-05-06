@@ -112,18 +112,39 @@
 
         <!-- MAIN LAYOUT -->
         <div id="main-layout" class="hidden min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
-            <!-- SIDEBAR -->
-            <aside id="sidebar" class="w-full md:w-[280px] bg-white shadow-[4px_0_24px_rgba(0,0,0,0.02)] md:min-h-screen no-print flex flex-col z-40 relative">
-                <div class="p-6 md:p-8 flex flex-col items-center border-b border-gray-100 relative overflow-hidden">
+            
+            <!-- SIDEBAR & MOBILE NAVIGATION -->
+            <aside id="sidebar" class="w-full md:w-[280px] bg-white shadow-sm md:shadow-[4px_0_24px_rgba(0,0,0,0.02)] md:min-h-screen no-print flex flex-col z-40 sticky top-0 md:relative">
+                
+                <!-- MOBILE HEADER (Only visible on mobile) -->
+                <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white">
+                    <div class="flex items-center gap-3">
+                        <img id="mobile-user-photo" src="https://via.placeholder.com/150" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-sm">
+                        <div class="flex flex-col">
+                            <span id="mobile-user-name" class="font-bold text-gray-800 text-xs">User</span>
+                            <span id="mobile-user-role" class="text-[9px] text-blue-600 font-bold uppercase tracking-wider">Role</span>
+                        </div>
+                    </div>
+                    <button onclick="handleLogout()" class="text-red-500 p-2 hover:bg-red-50 rounded-lg transition-colors">
+                        <i class="fas fa-sign-out-alt text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- DESKTOP PROFILE (Hidden on mobile) -->
+                <div class="hidden md:flex p-6 md:p-8 flex-col items-center border-b border-gray-100 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-50 to-indigo-50"></div>
                     <img id="user-photo-sidebar" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-white mb-3 shadow-md relative z-10">
                     <h3 id="user-name-sidebar" class="font-bold text-gray-800 text-center relative z-10 text-lg">Nama User</h3>
                     <span id="user-role-badge" class="px-4 py-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 text-[10px] uppercase font-bold rounded-full mt-2 relative z-10 shadow-sm border border-blue-200/50 tracking-wider">Role</span>
                 </div>
                 
-                <nav class="p-4 space-y-1.5 flex-1 overflow-y-auto" id="nav-menu"></nav>
+                <!-- NAVIGATION MENU -->
+                <nav class="p-2 md:p-4 flex flex-row md:flex-col gap-2 md:gap-1.5 overflow-x-auto md:overflow-visible bg-white border-b md:border-b-0 border-gray-100 md:flex-1 justify-between md:justify-start" id="nav-menu">
+                    <!-- Nav items injected via JS based on role -->
+                </nav>
 
-                <div class="p-4 border-t border-gray-100 mt-auto bg-gray-50/50">
+                <!-- DESKTOP LOGOUT (Hidden on mobile) -->
+                <div class="hidden md:block p-4 border-t border-gray-100 mt-auto bg-gray-50/50">
                     <button onclick="handleLogout()" class="w-full flex items-center justify-center md:justify-start space-x-3 p-3.5 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all font-medium active:scale-[0.98]">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Logout dari JAGUAR</span>
@@ -290,9 +311,18 @@
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-layout').classList.remove('hidden');
             
+            // Desktop Profile
             document.getElementById('user-photo-sidebar').src = getAvatar(currentUser.nama, currentUser.foto);
             document.getElementById('user-name-sidebar').innerText = currentUser.nama;
             document.getElementById('user-role-badge').innerText = currentUser.role;
+
+            // Mobile Profile
+            const mobilePhoto = document.getElementById('mobile-user-photo');
+            if(mobilePhoto) mobilePhoto.src = getAvatar(currentUser.nama, currentUser.foto);
+            const mobileName = document.getElementById('mobile-user-name');
+            if(mobileName) mobileName.innerText = currentUser.nama;
+            const mobileRole = document.getElementById('mobile-user-role');
+            if(mobileRole) mobileRole.innerText = currentUser.role;
 
             renderMenu();
             renderPage('dashboard');
@@ -311,12 +341,13 @@
             }
             menus.push({ id: 'profile', label: 'Pengaturan Profil', icon: 'fa-user-shield' });
 
+            // Layout navigasi responsif (Icon-only untuk mobile)
             menuEl.innerHTML = menus.map(m => `
-                <button onclick="renderPage('${m.id}')" id="btn-${m.id}" class="w-full flex items-center space-x-3 p-3.5 text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all duration-300 nav-btn font-medium active:scale-[0.98]">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-gray-100 text-gray-500 icon-container transition-colors">
-                        <i class="fas ${m.icon} text-sm"></i>
+                <button onclick="renderPage('${m.id}')" id="btn-${m.id}" title="${m.label}" class="flex-1 md:w-full flex items-center justify-center md:justify-start space-x-0 md:space-x-3 p-2 md:p-3.5 text-gray-500 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all duration-300 nav-btn font-medium active:scale-[0.98]">
+                    <div class="w-10 h-10 md:w-8 md:h-8 rounded-xl md:rounded-lg flex items-center justify-center bg-transparent md:bg-gray-100 text-current md:text-gray-500 icon-container transition-colors">
+                        <i class="fas ${m.icon} text-xl md:text-sm"></i>
                     </div>
-                    <span class="text-sm tracking-wide">${m.label}</span>
+                    <span class="hidden md:block text-sm tracking-wide">${m.label}</span>
                 </button>
             `).join('');
         }
