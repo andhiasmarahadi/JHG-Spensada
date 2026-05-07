@@ -60,7 +60,6 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* Styling the blog content to full screen */
         .post-body { margin: 0 !important; padding: 0 !important; }
     </style>
 </head>
@@ -68,9 +67,8 @@
 
     <!-- KONFIGURASI APLIKASI -->
     <script>
-        // UBAH IS_PREVIEW KE false JIKA AKAN DI-DEPLOY KE BLOGGER / GITHUB
         const IS_PREVIEW = false; 
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwUUCisrwAJeBt6mEiyjuD2KjkZtx6ZVutM-BfzeTdwN0ZMSbObvaogD6DCk46f_w/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzuzBZ8Mjs5qD79DHVXGigjABaP1IPNaAgxvhNUFAd8F0qgUIvNiZZHMFdWXxBbF1JboA/exec"; 
         const APP_LOGO = "https://i.imghippo.com/files/RG1026Lg.png";
         const PRINT_KOP = "https://i.imghippo.com/files/tuTX6225pKs.png";
     </script>
@@ -82,104 +80,68 @@
 
     <!-- MAIN APP CONTAINER -->
     <div id="app">
-        <!-- APP ROUTES (LOGIN / DASHBOARD) -->
+        <!-- LOGIN SCREEN -->
         <div id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900">
-            <div class="absolute top-0 left-0 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-            <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-            
             <div class="max-w-md w-full glass-morphism p-8 rounded-[2rem] shadow-2xl text-center relative z-10 border border-white/10">
-                <img src="https://i.imghippo.com/files/RG1026Lg.png" alt="Logo Jaguar" class="mx-auto w-48 mb-8 drop-shadow-xl hover:scale-105 transition-transform duration-300" onerror="this.src='https://via.placeholder.com/150x50?text=JAGUAR'">
+                <img src="https://i.imghippo.com/files/RG1026Lg.png" alt="Logo Jaguar" class="mx-auto w-48 mb-8 drop-shadow-xl hover:scale-105 transition-transform duration-300">
                 <div class="space-y-5">
                     <div class="relative group">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                            <i class="fas fa-user"></i>
-                        </span>
-                        <input type="text" id="login-nip" placeholder="NIP / Username" class="w-full pl-12 pr-4 py-3.5 rounded-2xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:border-blue-500 transition-all font-medium text-gray-700 placeholder-gray-400">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-blue-500"><i class="fas fa-user"></i></span>
+                        <input type="text" id="login-nip" placeholder="NIP / Username" class="w-full pl-12 pr-4 py-3.5 rounded-2xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:border-blue-500 transition-all font-medium">
                     </div>
                     <div class="relative group">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-blue-500 transition-colors">
-                            <i class="fas fa-lock"></i>
-                        </span>
-                        <input type="password" id="login-pass" placeholder="Password" class="w-full pl-12 pr-4 py-3.5 rounded-2xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:border-blue-500 transition-all font-medium text-gray-700 placeholder-gray-400">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 group-focus-within:text-blue-500"><i class="fas fa-lock"></i></span>
+                        <input type="password" id="login-pass" placeholder="Password" class="w-full pl-12 pr-4 py-3.5 rounded-2xl border-2 border-gray-100 bg-gray-50 focus:bg-white focus:outline-none focus:border-blue-500 transition-all font-medium">
                     </div>
-                    <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg shadow-blue-500/30 active:scale-[0.98]">
-                        MASUK KE SISTEM
-                    </button>
-                    <!-- TRADEMARK UPDATE -->
-                    <p class="text-xs text-gray-400 font-medium mt-6 tracking-wide leading-relaxed">
-                        JAGUAR v2.0 &bull; SMP Negeri 1 Dawan<br>
-                        <span class="text-gray-500 font-bold">Andhi Asmara Hadi &copy; 2026</span>
-                    </p>
+                    <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-4 rounded-2xl transition-all shadow-lg active:scale-[0.98]">MASUK KE SISTEM</button>
+                    <p class="text-xs text-gray-400 font-medium mt-6">JAGUAR v2.0 &bull; SMP Negeri 1 Dawan<br><span class="text-gray-500 font-bold">Andhi Asmara Hadi &copy; 2026</span></p>
                 </div>
             </div>
         </div>
 
         <!-- MAIN LAYOUT -->
         <div id="main-layout" class="hidden min-h-screen flex flex-col md:flex-row bg-[#f8fafc]">
-            
-            <!-- SIDEBAR & MOBILE NAVIGATION -->
-            <aside id="sidebar" class="w-full md:w-[280px] bg-white shadow-sm md:shadow-[4px_0_24px_rgba(0,0,0,0.02)] md:min-h-screen no-print flex flex-col z-40 sticky top-0 md:relative">
-                
-                <!-- MOBILE HEADER -->
-                <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-gray-100 bg-white">
+            <aside id="sidebar" class="w-full md:w-[280px] bg-white shadow-sm md:min-h-screen no-print flex flex-col z-40 sticky top-0 md:relative">
+                <div class="md:hidden flex items-center justify-between px-4 py-3 border-b border-gray-100">
                     <div class="flex items-center gap-3">
-                        <img id="mobile-user-photo" src="https://via.placeholder.com/150" class="w-9 h-9 rounded-full object-cover border-2 border-white shadow-sm">
+                        <img id="mobile-user-photo" src="https://via.placeholder.com/150" class="w-9 h-9 rounded-full object-cover">
                         <div class="flex flex-col">
                             <span id="mobile-user-name" class="font-bold text-gray-800 text-xs">User</span>
-                            <span id="mobile-user-role" class="text-[9px] text-blue-600 font-bold uppercase tracking-wider">Role</span>
+                            <span id="mobile-user-role" class="text-[9px] text-blue-600 font-bold uppercase">Role</span>
                         </div>
                     </div>
-                    <button onclick="handleLogout()" class="text-red-500 p-2 hover:bg-red-50 rounded-lg transition-colors">
-                        <i class="fas fa-sign-out-alt text-lg"></i>
-                    </button>
+                    <button onclick="handleLogout()" class="text-red-500 p-2"><i class="fas fa-sign-out-alt"></i></button>
                 </div>
 
-                <!-- DESKTOP PROFILE -->
-                <div class="hidden md:flex p-6 md:p-8 flex-col items-center border-b border-gray-100 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-blue-50 to-indigo-50"></div>
-                    <img id="user-photo-sidebar" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-white mb-3 shadow-md relative z-10">
-                    <h3 id="user-name-sidebar" class="font-bold text-gray-800 text-center relative z-10 text-lg">Nama User</h3>
-                    <span id="user-role-badge" class="px-4 py-1.5 bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 text-[10px] uppercase font-bold rounded-full mt-2 relative z-10 shadow-sm border border-blue-200/50 tracking-wider">Role</span>
+                <div class="hidden md:flex p-6 md:p-8 flex-col items-center border-b border-gray-100 bg-gradient-to-b from-blue-50/50 to-white">
+                    <img id="user-photo-sidebar" src="https://via.placeholder.com/150" class="w-24 h-24 rounded-full object-cover border-4 border-white mb-3 shadow-md">
+                    <h3 id="user-name-sidebar" class="font-bold text-gray-800 text-center text-lg">Nama User</h3>
+                    <span id="user-role-badge" class="px-4 py-1 bg-blue-100 text-blue-700 text-[10px] uppercase font-bold rounded-full mt-2 tracking-wider">Role</span>
                 </div>
                 
-                <!-- NAVIGATION MENU -->
-                <nav class="p-2 md:p-4 flex flex-row md:flex-col gap-2 md:gap-1.5 overflow-x-auto md:overflow-visible bg-white border-b md:border-b-0 border-gray-100 md:flex-1 justify-between md:justify-start" id="nav-menu">
-                    <!-- Nav items injected via JS based on role -->
-                </nav>
+                <nav class="p-2 md:p-4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible md:flex-1" id="nav-menu"></nav>
 
-                <!-- DESKTOP LOGOUT -->
-                <div class="hidden md:block p-4 border-t border-gray-100 mt-auto bg-gray-50/50">
-                    <button onclick="handleLogout()" class="w-full flex items-center justify-center md:justify-start space-x-3 p-3.5 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all font-medium active:scale-[0.98]">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Logout dari JAGUAR</span>
+                <div class="hidden md:block p-4 border-t border-gray-100 mt-auto">
+                    <button onclick="handleLogout()" class="w-full flex items-center space-x-3 p-3.5 text-red-500 hover:bg-red-50 rounded-xl transition-all font-medium">
+                        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
                     </button>
                 </div>
             </aside>
 
-            <!-- CONTENT AREA -->
             <main class="flex-1 p-4 md:p-8 overflow-y-auto w-full">
                 <div id="content-container" class="max-w-7xl mx-auto"></div>
             </main>
         </div>
     </div>
 
-    <!-- SCRIPT LOGIC -->
     <script>
-        // --- DATA STATE ---
         let currentUser = null;
         let journalsData = [];
         let usersData = [];
         let activePage = 'dashboard';
         let currentFilteredJournals = []; 
-        let editingJournalData = null; // State untuk fitur Edit Jurnal
+        let editingJournalData = null;
 
-        const getAvatar = (nama, foto) => {
-            if (foto && typeof foto === 'string' && foto.startsWith('data:image')) return foto;
-            if (foto && typeof foto === 'string' && foto.trim() !== '' && !foto.includes('via.placeholder.com') && !foto.includes('ui-avatars.com')) return foto.trim();
-            return `https://ui-avatars.com/api/?name=${encodeURIComponent(nama || 'User')}&background=eff6ff&color=2563eb&bold=true&rounded=true`;
-        };
-
-        // Dummy Data untuk Mode Preview sesuai instruksi terbaru
         const dummyUsers = [
             { nip: 'admin', nama: 'Admin Jaguar', password: 'edudigital', role: 'Admin', foto: '', mapel: '-' },
             { nip: 'kepsek', nama: 'Kepala Sekolah, M.Pd', password: 'edudigital', role: 'Kepsek', foto: '', mapel: '-' },
@@ -188,8 +150,6 @@
 
         const dummyJournals = [
             { id: '1001', tanggal: '2026-05-06', nip_user: 'peserta', nama_user: 'Guru Aktif, S.Pd', jam_mulai: '1', jam_selesai: '3', kelas: '7A', uraian: 'Mempelajari Aljabar Dasar', jml_hadir: 30, abs_sakit: 1, abs_ijin: 0, abs_alpha: 0, foto: '' },
-            { id: '1002', tanggal: '2026-05-06', nip_user: 'peserta', nama_user: 'Guru Aktif, S.Pd', jam_mulai: '4', jam_selesai: '5', kelas: '8B', uraian: 'Persamaan Linear Satu Variabel', jml_hadir: 28, abs_sakit: 0, abs_ijin: 2, abs_alpha: 0, foto: '' },
-            { id: '1003', tanggal: '2026-05-07', nip_user: 'peserta', nama_user: 'Guru Aktif, S.Pd', jam_mulai: '1', jam_selesai: '2', kelas: 'Umum', uraian: 'Upacara Bendera', jml_hadir: 0, abs_sakit: 0, abs_ijin: 0, abs_alpha: 0, foto: '' },
         ];
 
         if(IS_PREVIEW) {
@@ -197,12 +157,10 @@
             journalsData = [...dummyJournals];
         }
 
-        // Anti Inspect Element Security
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; 
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false; 
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false; 
-            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false; 
+        const getAvatar = (nama, foto) => {
+            if (foto && foto.startsWith('data:image')) return foto;
+            if (foto && foto.trim() !== '' && !foto.includes('via.placeholder.com')) return foto.trim();
+            return `https://ui-avatars.com/api/?name=${encodeURIComponent(nama || 'User')}&background=eff6ff&color=2563eb&bold=true&rounded=true`;
         };
 
         const showLoader = (show) => {
@@ -211,45 +169,19 @@
         };
 
         const notify = (title, icon = 'success') => {
-            Swal.fire({
-                title: title, icon: icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000
-            });
+            Swal.fire({ title: title, icon: icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
         };
 
-        const compressImage = async (file, isAvatar = false) => {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        const maxDim = isAvatar ? 200 : 400; 
-                        
-                        if (width > height) {
-                            if (width > maxDim) { height *= maxDim / width; width = maxDim; }
-                        } else {
-                            if (height > maxDim) { width *= maxDim / height; height = maxDim; }
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.5)); 
-                    };
-                };
-            });
+        const getTodayString = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         };
 
-        // --- API CALL HANDLER ---
         async function callBackend(action, data) {
             try {
-                if(!GAS_URL || GAS_URL === "" || GAS_URL === "URL_DEPLOY_GAS_ANDA_DISINI") {
-                    return { status: 'error', message: 'GAS_URL belum diatur. Silakan isi konfigurasi GAS_URL di index.html' };
-                }
                 const response = await fetch(GAS_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -258,29 +190,20 @@
                 });
                 return await response.json();
             } catch (error) {
-                return { status: 'error', message: 'Gagal terhubung ke server. Detail: ' + error.message };
+                return { status: 'error', message: 'Gagal terhubung ke server.' };
             }
         }
 
-        // --- CORE LOGIC ---
         function handleLogin() {
             const nip = document.getElementById('login-nip').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
-
-            if(!nip || !pass) return notify('Mohon isi NIP dan Password!', 'warning');
-
+            if(!nip || !pass) return notify('Isi NIP dan Password!', 'warning');
             showLoader(true);
-
             if (IS_PREVIEW) {
                 setTimeout(() => {
                     const user = usersData.find(u => String(u.nip) === String(nip) && String(u.password) === String(pass));
-                    if (user) {
-                        currentUser = user;
-                        initApp();
-                        notify('Selamat datang, ' + user.nama);
-                    } else {
-                        notify('NIP atau Password salah!', 'error');
-                    }
+                    if (user) { currentUser = user; initApp(); notify('Halo, ' + user.nama); }
+                    else notify('NIP/Password salah!', 'error');
                     showLoader(false);
                 }, 1000);
             } else {
@@ -291,31 +214,17 @@
                         journalsData = res.journals;
                         usersData = res.users;
                         initApp();
-                        notify('Selamat datang, ' + currentUser.nama);
-                    } else {
-                        notify(res.message, 'error');
-                    }
+                    } else notify(res.message, 'error');
                 });
             }
         }
 
         function handleLogout() {
-            Swal.fire({
-                title: 'Keluar dari Sistem?',
-                text: "Sesi Anda akan diakhiri.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Ya, Logout',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
+            Swal.fire({ title: 'Keluar?', text: "Sesi akan berakhir.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Logout' }).then((result) => {
                 if (result.isConfirmed) {
                     currentUser = null;
                     document.getElementById('login-screen').classList.remove('hidden');
                     document.getElementById('main-layout').classList.add('hidden');
-                    document.getElementById('login-nip').value = '';
-                    document.getElementById('login-pass').value = '';
                 }
             });
         }
@@ -323,46 +232,26 @@
         function initApp() {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-layout').classList.remove('hidden');
-            
             document.getElementById('user-photo-sidebar').src = getAvatar(currentUser.nama, currentUser.foto);
             document.getElementById('user-name-sidebar').innerText = currentUser.nama;
             document.getElementById('user-role-badge').innerText = currentUser.role;
-
-            const mobilePhoto = document.getElementById('mobile-user-photo');
-            if(mobilePhoto) mobilePhoto.src = getAvatar(currentUser.nama, currentUser.foto);
-            const mobileName = document.getElementById('mobile-user-name');
-            if(mobileName) mobileName.innerText = currentUser.nama;
-            const mobileRole = document.getElementById('mobile-user-role');
-            if(mobileRole) mobileRole.innerText = currentUser.role;
-
             renderMenu();
             renderPage('dashboard');
         }
 
-        function resetAndGoToInput() {
-            editingJournalData = null; // Clear edit mode if user clicks "Isi Jurnal Baru" explicitly
-            renderPage('input-jurnal');
-        }
-
         function renderMenu() {
             const menuEl = document.getElementById('nav-menu');
-            let menus = [ { id: 'dashboard', label: 'Dashboard Utama', icon: 'fa-chart-pie', action: "renderPage('dashboard')" } ];
-
-            if (currentUser.role === 'Admin') {
-                menus.push({ id: 'manage-users', label: 'Kelola Anggota', icon: 'fa-users-cog', action: "renderPage('manage-users')" });
-            }
+            let menus = [ { id: 'dashboard', label: 'Dashboard', icon: 'fa-chart-pie', action: "renderPage('dashboard')" } ];
+            if (currentUser.role === 'Admin') menus.push({ id: 'manage-users', label: 'Anggota', icon: 'fa-users-cog', action: "renderPage('manage-users')" });
             if (currentUser.role === 'Guru' || currentUser.role === 'Kepsek') {
-                const labelInput = currentUser.role === 'Kepsek' ? 'Isi Jurnal Kepsek' : 'Isi Jurnal Baru';
-                menus.push({ id: 'input-jurnal', label: labelInput, icon: 'fa-pen-to-square', action: "resetAndGoToInput()" });
+                const lbl = currentUser.role === 'Kepsek' ? 'Isi Jurnal' : 'Jurnal Baru';
+                menus.push({ id: 'input-jurnal', label: lbl, icon: 'fa-pen-to-square', action: "editingJournalData=null; renderPage('input-jurnal')" });
             }
-            menus.push({ id: 'profile', label: 'Pengaturan Profil', icon: 'fa-user-shield', action: "renderPage('profile')" });
-
+            menus.push({ id: 'profile', label: 'Profil', icon: 'fa-user-shield', action: "renderPage('profile')" });
             menuEl.innerHTML = menus.map(m => `
-                <button onclick="${m.action}" id="btn-${m.id}" title="${m.label}" class="flex-1 md:w-full flex items-center justify-center md:justify-start space-x-0 md:space-x-3 p-2 md:p-3.5 text-gray-500 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all duration-300 nav-btn font-medium active:scale-[0.98]">
-                    <div class="w-10 h-10 md:w-8 md:h-8 rounded-xl md:rounded-lg flex items-center justify-center bg-transparent md:bg-gray-100 text-current md:text-gray-500 icon-container transition-colors">
-                        <i class="fas ${m.icon} text-xl md:text-sm"></i>
-                    </div>
-                    <span class="hidden md:block text-sm tracking-wide">${m.label}</span>
+                <button onclick="${m.action}" id="btn-${m.id}" class="flex-1 md:w-full flex items-center justify-center md:justify-start space-x-0 md:space-x-3 p-2 md:p-3.5 text-gray-500 hover:bg-blue-50 hover:text-blue-600 rounded-xl transition-all nav-btn font-medium">
+                    <div class="w-10 h-10 md:w-8 md:h-8 rounded-xl flex items-center justify-center icon-container"><i class="fas ${m.icon} text-xl md:text-sm"></i></div>
+                    <span class="hidden md:block text-sm">${m.label}</span>
                 </button>
             `).join('');
         }
@@ -370,137 +259,45 @@
         function renderPage(page) {
             activePage = page;
             const container = document.getElementById('content-container');
-            
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('sidebar-item-active'));
             const activeBtn = document.getElementById('btn-' + page);
             if(activeBtn) activeBtn.classList.add('sidebar-item-active');
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
-
             if (page === 'dashboard') renderDashboard(container);
             else if (page === 'input-jurnal') renderInputJurnal(container);
             else if (page === 'manage-users') renderManageUsers(container);
             else if (page === 'profile') renderProfile(container);
         }
 
-        // --- DASHBOARD RENDERER ---
+        // --- DASHBOARD ---
         function renderDashboard(container, filteredData = null, filterState = {}) {
-            let dataToShow = filteredData;
-            
-            if (!dataToShow) {
-                dataToShow = journalsData;
-                if(currentUser.role === 'Guru') {
-                    dataToShow = journalsData.filter(j => j.nip_user === currentUser.nip);
-                }
-            }
-
+            let dataToShow = filteredData || (currentUser.role === 'Guru' ? journalsData.filter(j => j.nip_user === currentUser.nip) : journalsData);
             currentFilteredJournals = dataToShow; 
-
-            // Calculate Widgets
-            const totalJurnal = currentFilteredJournals.length;
-            let totalJam = 0;
-            let totalHadirSiswa = 0;
-            currentFilteredJournals.forEach(j => {
-                if(j.kelas !== 'Istirahat' && j.kelas !== 'Umum') {
-                    let start = parseInt(j.jam_mulai);
-                    let end = parseInt(j.jam_selesai);
-                    if(!isNaN(start) && !isNaN(end) && end >= start) totalJam += (end - start + 1);
-                    totalHadirSiswa += parseInt(j.jml_hadir) || 0;
-                }
-            });
-
-            const startVal = filterState.start || '';
-            const endVal = filterState.end || '';
-            const nameVal = filterState.name || '';
-
             container.innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Dashboard Jurnal</h1>
-                        <p class="text-sm text-gray-500 mt-1">Pantau dan kelola aktivitas jurnal harian</p>
-                    </div>
-                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                        <button onclick="handlePrintDialog()" class="flex-1 md:flex-none action-btn bg-white border border-indigo-200 text-indigo-600 px-4 py-2.5 rounded-xl hover:bg-indigo-50 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fas fa-print"></i> Cetak Laporan
-                        </button>
-                        <button onclick="exportToExcel()" class="flex-1 md:flex-none action-btn bg-white border border-emerald-200 text-emerald-600 px-4 py-2.5 rounded-xl hover:bg-emerald-50 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fas fa-file-excel"></i> Export Excel
-                        </button>
-                        ${currentUser.role === 'Admin' ? `
-                            <button onclick="handleBulkDelete()" class="flex-1 md:flex-none action-btn bg-white border border-red-200 text-red-600 px-4 py-2.5 rounded-xl hover:bg-red-50 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm">
-                                <i class="fas fa-trash-alt"></i> Hapus Data
-                            </button>
-                        ` : ''}
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+                    <div class="flex gap-2">
+                        <button onclick="handlePrintDialog()" class="bg-white border border-indigo-200 text-indigo-600 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2"><i class="fas fa-print"></i> Cetak</button>
+                        <button onclick="exportToExcel()" class="bg-white border border-emerald-200 text-emerald-600 px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2"><i class="fas fa-file-excel"></i> Excel</button>
                     </div>
                 </div>
-
-                <!-- WIDGET STATISTIK RINGKAS -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 shadow-sm text-white relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 text-white/20"><i class="fas fa-book text-6xl"></i></div>
-                        <h3 class="text-blue-100 text-sm font-medium mb-1">Total Entri Jurnal</h3>
-                        <p class="text-3xl font-bold">${totalJurnal}</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-5 shadow-sm text-white relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 text-white/20"><i class="fas fa-clock text-6xl"></i></div>
-                        <h3 class="text-indigo-100 text-sm font-medium mb-1">Total Jam Mengajar (JP)</h3>
-                        <p class="text-3xl font-bold">${totalJam}</p>
-                    </div>
-                    <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-5 shadow-sm text-white relative overflow-hidden">
-                        <div class="absolute -right-4 -bottom-4 text-white/20"><i class="fas fa-users text-6xl"></i></div>
-                        <h3 class="text-emerald-100 text-sm font-medium mb-1">Akumulasi Siswa Hadir</h3>
-                        <p class="text-3xl font-bold">${totalHadirSiswa}</p>
+                <div class="bg-white p-5 rounded-2xl shadow-sm mb-6 border border-gray-100">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+                        <input type="date" id="filter-start" value="${filterState.start || ''}" class="w-full p-2.5 border rounded-xl text-sm">
+                        <input type="date" id="filter-end" value="${filterState.end || ''}" class="w-full p-2.5 border rounded-xl text-sm">
+                        ${currentUser.role !== 'Guru' ? `<input type="text" id="filter-name" value="${filterState.name || ''}" placeholder="Nama Guru..." class="w-full p-2.5 border rounded-xl text-sm">` : ''}
+                        <button onclick="applyFilters()" class="bg-blue-600 text-white py-2.5 rounded-xl font-semibold text-sm">Filter</button>
                     </div>
                 </div>
-
-                <!-- FILTER DATA -->
-                <div class="bg-white p-5 md:p-6 rounded-2xl shadow-sm mb-6 border border-gray-100 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="fas fa-filter text-blue-500 bg-blue-50 p-2 rounded-lg text-sm"></i>
-                        <h3 class="font-bold text-gray-700 text-sm">Filter Pencarian</h3>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 ${currentUser.role === 'Guru' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-4 items-end">
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Dari Tanggal</label>
-                            <input type="date" id="filter-start" value="${startVal}" class="w-full p-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Sampai Tanggal</label>
-                            <input type="date" id="filter-end" value="${endVal}" class="w-full p-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
-                        </div>
-                        ${currentUser.role !== 'Guru' ? `
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Nama Guru</label>
-                            <div class="relative group">
-                                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 group-focus-within:text-blue-500 transition-colors"><i class="fas fa-search"></i></span>
-                                <input type="text" id="filter-name" value="${nameVal}" placeholder="Ketik nama..." class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700 placeholder-gray-400">
-                            </div>
-                        </div>
-                        ` : ''}
-                        <div class="flex gap-2">
-                            <button onclick="applyFilters()" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl hover:bg-blue-700 transition font-semibold shadow-md shadow-blue-600/20 active:scale-95 flex items-center justify-center gap-2 text-sm">Terapkan</button>
-                            <button onclick="resetFilters()" class="flex-1 bg-white text-gray-600 py-2.5 rounded-xl hover:bg-gray-50 transition font-semibold active:scale-95 border border-gray-200 flex items-center justify-center gap-2 text-sm">Reset</button>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse whitespace-nowrap min-w-[900px]">
-                            <thead>
-                                <tr class="bg-gray-50/80 text-gray-500 text-[11px] uppercase tracking-wider">
-                                    <th class="p-4 border-b font-semibold w-32">Waktu</th>
-                                    <th class="p-4 border-b font-semibold">Guru Pengajar</th>
-                                    <th class="p-4 border-b font-semibold">Kegiatan / Materi</th>
-                                    <th class="p-4 border-b font-semibold text-center w-24">Kelas</th>
-                                    <th class="p-4 border-b font-semibold text-center w-24">Dok.</th>
-                                    <th class="p-4 border-b font-semibold text-center w-36">Aksi</th>
+                        <table class="w-full text-left border-collapse whitespace-nowrap min-w-[800px]">
+                            <thead class="bg-gray-50 text-gray-500 text-[11px] uppercase">
+                                <tr>
+                                    <th class="p-4 border-b">Waktu</th><th class="p-4 border-b">Guru</th><th class="p-4 border-b">Materi</th><th class="p-4 border-b text-center">Kelas</th><th class="p-4 border-b text-center">Aksi</th>
                                 </tr>
                             </thead>
-                            <tbody id="journal-list-body" class="divide-y divide-gray-50">
-                                ${renderJournalRows(dataToShow)}
-                            </tbody>
+                            <tbody class="divide-y divide-gray-50">${renderJournalRows(dataToShow)}</tbody>
                         </table>
                     </div>
                 </div>
@@ -508,369 +305,80 @@
         }
 
         function renderJournalRows(data) {
-            const sorted = [...data].sort((a, b) => {
-                const dateA = new Date(a.tanggal);
-                const dateB = new Date(b.tanggal);
-                if (dateA > dateB) return -1;
-                if (dateA < dateB) return 1;
-                return (parseInt(b.jam_mulai) || 0) - (parseInt(a.jam_mulai) || 0);
-            });
-            if(sorted.length === 0) return `<tr><td colspan="6" class="p-12 text-center text-gray-400 font-medium"><i class="fas fa-folder-open text-3xl mb-3 block text-gray-300"></i>Belum ada data jurnal ditemukan.</td></tr>`;
-            
+            const sorted = [...data].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+            if(sorted.length === 0) return `<tr><td colspan="5" class="p-8 text-center text-gray-400">Tidak ada data.</td></tr>`;
             return sorted.map(j => `
-                <tr class="hover:bg-blue-50/40 transition-colors group">
-                    <td class="p-4 align-top">
-                        <div class="font-bold text-gray-800 text-sm">${formatDate(j.tanggal)}</div>
-                        <div class="text-[11px] text-blue-600 bg-blue-50 inline-flex items-center px-2 py-0.5 rounded-md mt-1.5 font-bold border border-blue-100">
-                            <i class="far fa-clock mr-1"></i> Jam: ${j.jam_mulai}-${j.jam_selesai}
-                        </div>
-                    </td>
-                    <td class="p-4 align-top font-semibold text-gray-700">
-                        <div class="flex items-center gap-3">
-                            <img src="${getAvatar(j.nama_user, usersData.find(u => u.nip === j.nip_user)?.foto)}" class="w-9 h-9 rounded-full border-2 border-white shadow-sm object-cover">
-                            <div>
-                                <span class="block text-sm">${j.nama_user}</span>
-                                <span class="block text-[10px] text-gray-400 font-normal font-mono mt-0.5">${j.nip_user}</span>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="p-4 align-top">
-                        <p class="max-w-[300px] whitespace-normal text-sm text-gray-600 leading-relaxed line-clamp-2" title="${j.uraian}">${j.uraian}</p>
-                    </td>
-                    <td class="p-4 align-top text-center">
-                        <span class="px-3 py-1.5 rounded-lg bg-gray-50 text-gray-700 text-[11px] font-bold uppercase tracking-wide border border-gray-200 inline-block">${j.kelas || '-'}</span>
-                    </td>
-                    <td class="p-4 align-top text-center">
-                        ${j.foto ? `
-                            <div class="relative inline-block group/img">
-                                <img src="${j.foto}" class="w-12 h-12 rounded-xl object-cover cursor-pointer transition-all duration-300 border border-gray-200 shadow-sm group-hover/img:shadow-md group-hover/img:border-blue-300" onclick="previewImage('${j.foto}')">
-                                <div class="absolute inset-0 bg-black/20 rounded-xl opacity-0 group-hover/img:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                                    <i class="fas fa-expand text-white text-xs drop-shadow-md"></i>
-                                </div>
-                            </div>
-                        ` : '<span class="text-gray-300 italic text-xs font-medium bg-gray-50 px-2 py-1 rounded border border-gray-100">Kosong</span>'}
-                    </td>
-                    <td class="p-4 align-top text-center">
-                        <div class="flex justify-center gap-2">
-                            ${(currentUser.role === 'Admin' || currentUser.nip === j.nip_user) ? `
-                            <button onclick="editJournalEntry('${j.id}')" title="Edit Jurnal" class="bg-white border border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white p-2 w-9 h-9 rounded-xl inline-flex items-center justify-center transition-all duration-300 shadow-sm">
-                                <i class="fas fa-pen text-sm"></i>
-                            </button>
-                            <button onclick="deleteIndividualJournal('${j.id}')" title="Hapus Jurnal" class="bg-white border border-red-100 text-red-500 hover:bg-red-500 hover:text-white p-2 w-9 h-9 rounded-xl inline-flex items-center justify-center transition-all duration-300 shadow-sm">
-                                <i class="fas fa-trash text-sm"></i>
-                            </button>
-                            ` : '-'}
-                        </div>
+                <tr class="hover:bg-blue-50/40 transition-colors">
+                    <td class="p-4 text-sm"><b>${j.tanggal}</b><br><span class="text-[10px] text-blue-600">Jam ${j.jam_mulai}-${j.jam_selesai}</span></td>
+                    <td class="p-4 text-sm font-semibold">${j.nama_user}</td>
+                    <td class="p-4 text-sm"><p class="max-w-[250px] truncate">${j.uraian}</p></td>
+                    <td class="p-4 text-center"><span class="px-2 py-1 bg-gray-100 rounded-md text-[10px] font-bold">${j.kelas}</span></td>
+                    <td class="p-4 text-center">
+                        ${(currentUser.role === 'Admin' || currentUser.nip === j.nip_user) ? `
+                        <button onclick="editJournalEntry('${j.id}')" class="text-blue-600 p-2"><i class="fas fa-pen"></i></button>
+                        <button onclick="deleteIndividualJournal('${j.id}')" class="text-red-500 p-2"><i class="fas fa-trash"></i></button>` : '-'}
                     </td>
                 </tr>
             `).join('');
         }
 
-        function formatDate(d) {
-            const date = new Date(d);
-            return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
-        }
-
-        function previewImage(src) {
-            Swal.fire({
-                imageUrl: src, imageAlt: 'Dokumentasi', showConfirmButton: false, width: 'auto',
-                background: 'transparent', backdrop: 'rgba(0,0,0,0.8)',
-                customClass: { image: 'rounded-2xl max-w-full max-h-[85vh] object-contain' }
-            });
-        }
-
         function applyFilters() {
             const start = document.getElementById('filter-start').value;
             const end = document.getElementById('filter-end').value;
-            const nameInput = document.getElementById('filter-name');
-            const name = nameInput ? nameInput.value.toLowerCase() : '';
-
+            const name = document.getElementById('filter-name')?.value.toLowerCase() || '';
             let filtered = journalsData;
             if(currentUser.role === 'Guru') filtered = filtered.filter(j => j.nip_user === currentUser.nip);
-
             if(start) filtered = filtered.filter(j => j.tanggal >= start);
             if(end) filtered = filtered.filter(j => j.tanggal <= end);
             if(name) filtered = filtered.filter(j => j.nama_user.toLowerCase().includes(name));
-
-            const filterState = { start: start, end: end, name: nameInput ? nameInput.value : '' };
-            renderDashboard(document.getElementById('content-container'), filtered, filterState);
+            renderDashboard(document.getElementById('content-container'), filtered, {start, end, name});
         }
 
-        function resetFilters() {
-            renderDashboard(document.getElementById('content-container'));
-        }
-
-        // --- EXPORT TO EXCEL ---
-        function exportToExcel() {
-            if (currentFilteredJournals.length === 0) return notify('Tidak ada data untuk di-export', 'warning');
-            
-            const dataToExport = currentFilteredJournals.map((j, index) => ({
-                'No': index + 1,
-                'Tanggal': j.tanggal,
-                'Nama Guru': j.nama_user,
-                'NIP': j.nip_user,
-                'Mulai Jam Ke': j.jam_mulai,
-                'Selesai Jam Ke': j.jam_selesai,
-                'Kelas/Kategori': j.kelas,
-                'Uraian Kegiatan': j.uraian,
-                'Hadir': j.jml_hadir,
-                'Sakit': j.abs_sakit,
-                'Ijin': j.abs_ijin,
-                'Alpha': j.abs_alpha
-            }));
-
-            const ws = XLSX.utils.json_to_sheet(dataToExport);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Data Jurnal");
-            XLSX.writeFile(wb, `Export_Jurnal_Jaguar_${new Date().toISOString().split('T')[0]}.xlsx`);
-            notify('Data berhasil di-export ke Excel');
-        }
-
-        // --- EDIT & HAPUS INDIVIDUAL ---
-        // PERBAIKAN: Menggunakan String() untuk menghindari masalah Type Mismatch (Number vs String)
-        function editJournalEntry(id) {
-            const entry = journalsData.find(j => String(j.id) === String(id));
-            if(entry) {
-                editingJournalData = entry;
-                renderPage('input-jurnal');
-            } else {
-                notify('Data jurnal tidak ditemukan.', 'error');
-            }
-        }
-
-        function deleteIndividualJournal(id) {
-            Swal.fire({
-                title: 'Hapus Jurnal?',
-                text: "Data ini tidak dapat dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoader(true);
-                    if (IS_PREVIEW) {
-                        setTimeout(() => {
-                            // PERBAIKAN: Menggunakan String() untuk filtering 
-                            journalsData = journalsData.filter(j => String(j.id) !== String(id));
-                            applyFilters(); 
-                            showLoader(false);
-                            notify('Jurnal berhasil dihapus');
-                        }, 1000);
-                    } else {
-                        callBackend('deleteSingleJournalGAS', { id: id }).then(res => {
-                            showLoader(false);
-                            if(res.status === 'success') {
-                                journalsData = res.journals;
-                                applyFilters();
-                                notify('Jurnal berhasil dihapus');
-                            } else {
-                                notify(res.message, 'error');
-                            }
-                        });
-                    }
-                }
-            });
-        }
-
-
-        // --- INPUT / EDIT JURNAL RENDERER ---
+        // --- INPUT / EDIT ---
         function renderInputJurnal(container) {
             const isGuru = currentUser.role === 'Guru';
-            const titleText = editingJournalData ? 'Edit Data Jurnal' : (currentUser.role === 'Kepsek' ? 'Isi Jurnal Kepsek' : 'Isi Jurnal Harian');
-            const subTitle = editingJournalData ? 'Ubah informasi jurnal yang telah disimpan.' : 'Lengkapi formulir di bawah ini dengan benar.';
-            const btnText = editingJournalData ? '<i class="fas fa-save"></i> UPDATE JURNAL' : '<i class="fas fa-paper-plane"></i> SIMPAN JURNAL';
-            
             container.innerHTML = `
-                <div class="max-w-3xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
-                    
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-gray-100 pb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-                                <i class="fas ${editingJournalData ? 'fa-edit' : 'fa-pen-nib'} text-lg"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-bold text-gray-800">${titleText}</h2>
-                                <p class="text-xs text-gray-500">${subTitle}</p>
-                            </div>
-                        </div>
-                        ${(currentUser.role === 'Kepsek' && !editingJournalData) ? `
-                        <button type="button" onclick="handlePrintDialog()" class="action-btn bg-white border border-indigo-200 text-indigo-600 px-4 py-2 rounded-xl hover:bg-indigo-50 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fas fa-print"></i> Cetak Jurnal
-                        </button>
-                        ` : ''}
-                        ${editingJournalData ? `
-                        <button type="button" onclick="resetAndGoToInput()" class="action-btn bg-red-50 border border-red-200 text-red-600 px-4 py-2 rounded-xl hover:bg-red-100 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fas fa-times"></i> Batal Edit
-                        </button>
-                        ` : ''}
-                    </div>
-
+                <div class="max-w-3xl mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6">${editingJournalData ? 'Edit Jurnal' : 'Isi Jurnal'}</h2>
                     <form id="journal-form" class="space-y-5">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Hari / Tanggal</label>
-                                <input type="date" id="f-tgl" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700 transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Pilih Kelas / Kategori</label>
-                                <select id="f-kelas" required onchange="handleKelasChange()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700 transition-all cursor-pointer">
-                                    ${isGuru ? `
-                                        <option value="" disabled selected>-- Pilih Kelas --</option>
-                                        <option value="Umum">Kegiatan Umum / Lainnya</option>
-                                        <option value="Istirahat">Waktu Istirahat</option>
-                                        <optgroup label="Kelas 7">
-                                            <option value="7A">Kelas 7A</option><option value="7B">Kelas 7B</option><option value="7C">Kelas 7C</option><option value="7D">Kelas 7D</option><option value="7E">Kelas 7E</option><option value="7F">Kelas 7F</option><option value="7G">Kelas 7G</option>
-                                        </optgroup>
-                                        <optgroup label="Kelas 8">
-                                            <option value="8A">Kelas 8A</option><option value="8B">Kelas 8B</option><option value="8C">Kelas 8C</option><option value="8D">Kelas 8D</option><option value="8E">Kelas 8E</option><option value="8F">Kelas 8F</option><option value="8G">Kelas 8G</option>
-                                        </optgroup>
-                                        <optgroup label="Kelas 9">
-                                            <option value="9A">Kelas 9A</option><option value="9B">Kelas 9B</option><option value="9C">Kelas 9C</option><option value="9D">Kelas 9D</option><option value="9E">Kelas 9E</option><option value="9F">Kelas 9F</option><option value="9G">Kelas 9G</option>
-                                        </optgroup>
-                                    ` : `
-                                        <option value="" disabled selected>-- Pilih Kegiatan --</option>
-                                        <option value="Umum">Kegiatan Umum</option>
-                                        <option value="Istirahat">Waktu Istirahat</option>
-                                    `}
-                                </select>
-                            </div>
+                            <div><label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Tanggal</label>
+                            <input type="date" id="f-tgl" required class="w-full p-3 border rounded-xl text-sm"></div>
+                            <div><label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Kelas</label>
+                            <select id="f-kelas" required class="w-full p-3 border rounded-xl text-sm">
+                                <option value="Umum">Umum</option><option value="Istirahat">Istirahat</option>
+                                ${[...Array(7)].map((_,i)=>`<option value="7${String.fromCharCode(65+i)}">7${String.fromCharCode(65+i)}</option>`).join('')}
+                            </select></div>
                         </div>
-
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Mulai Jam ke-</label>
-                                <select id="f-jam-mulai" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700 transition-all cursor-pointer">
-                                    ${[...Array(10).keys()].map(i => `<option value="${i}">Jam ke-${i}</option>`).join('')}
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Sampai Jam ke-</label>
-                                <select id="f-jam-selesai" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700 transition-all cursor-pointer">
-                                    ${[...Array(10).keys()].map(i => `<option value="${i}">Jam ke-${i}</option>`).join('')}
-                                </select>
-                            </div>
+                            <div><label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Mulai</label>
+                            <input type="number" id="f-jam-mulai" class="w-full p-3 border rounded-xl text-sm"></div>
+                            <div><label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Selesai</label>
+                            <input type="number" id="f-jam-selesai" class="w-full p-3 border rounded-xl text-sm"></div>
                         </div>
-
-                        <div>
-                            <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Uraian Kegiatan / Materi</label>
-                            <textarea id="f-uraian" rows="4" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm text-gray-700 transition-all resize-none" placeholder="Tuliskan secara detail apa yang dikerjakan..."></textarea>
-                        </div>
-
-                        ${isGuru ? `
-                            <div id="container-kehadiran" class="bg-gray-50/50 p-4 rounded-xl border border-gray-100 transition-all duration-300">
-                                <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-3">Kehadiran Siswa</label>
-                                <div class="grid grid-cols-4 gap-3">
-                                    <div class="col-span-2 md:col-span-1">
-                                        <label class="block text-[10px] font-bold text-emerald-600 mb-1">Hadir</label>
-                                        <input type="number" id="f-hadir" value="0" min="0" class="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 outline-none text-center bg-white font-medium">
-                                    </div>
-                                    <div class="col-span-2 md:col-span-1">
-                                        <label class="block text-[10px] font-bold text-yellow-600 mb-1">Sakit</label>
-                                        <input type="number" id="f-sakit" value="0" min="0" class="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-yellow-500 outline-none text-center bg-white font-medium">
-                                    </div>
-                                    <div class="col-span-2 md:col-span-1">
-                                        <label class="block text-[10px] font-bold text-blue-600 mb-1">Ijin</label>
-                                        <input type="number" id="f-ijin" value="0" min="0" class="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none text-center bg-white font-medium">
-                                    </div>
-                                    <div class="col-span-2 md:col-span-1">
-                                        <label class="block text-[10px] font-bold text-red-600 mb-1">Alpha</label>
-                                        <input type="number" id="f-alpha" value="0" min="0" class="w-full p-2.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-red-500 outline-none text-center bg-white font-medium">
-                                    </div>
-                                </div>
-                            </div>
-                        ` : ''}
-
-                        <div id="container-foto" class="transition-all duration-300">
-                            <label class="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Foto Dokumentasi</label>
-                            <div class="flex items-center justify-center w-full">
-                                <label class="flex flex-col items-center justify-center w-full h-36 border-2 border-dashed border-blue-200 rounded-2xl cursor-pointer hover:bg-blue-50/50 hover:border-blue-400 transition-all bg-gray-50">
-                                    <div class="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
-                                        <div class="w-12 h-12 bg-white rounded-full shadow-sm flex items-center justify-center mb-3 text-blue-500">
-                                            <i class="fas fa-camera text-xl"></i>
-                                        </div>
-                                        <p class="text-sm font-semibold text-gray-700">Klik untuk upload foto</p>
-                                        <p class="text-xs text-gray-400 mt-1">Otomatis di-compress hingga 25KB</p>
-                                    </div>
-                                    <input type="file" id="f-foto" class="hidden" accept="image/*" onchange="previewSelectedFoto(this)">
-                                </label>
-                            </div>
-                            <div id="foto-preview-container" class="mt-4 hidden relative inline-block">
-                                <img id="f-foto-img" class="h-32 w-auto rounded-xl border-2 border-gray-200 shadow-sm object-contain bg-gray-50 p-1">
-                                <button type="button" onclick="document.getElementById('f-foto').click()" class="absolute -bottom-2 -right-2 bg-blue-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md border-2 border-white hover:bg-blue-700">
-                                    <i class="fas fa-pen text-[10px]"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <button type="button" onclick="submitJurnal()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-4 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all shadow-lg shadow-blue-500/30 mt-6 active:scale-[0.98] flex items-center justify-center gap-2">
-                            ${btnText}
-                        </button>
+                        <div><label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Uraian</label>
+                        <textarea id="f-uraian" rows="4" required class="w-full p-3 border rounded-xl text-sm"></textarea></div>
+                        <img id="f-foto-img" class="h-32 hidden">
+                        <button type="button" onclick="submitJurnal()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-lg">SIMPAN JURNAL</button>
                     </form>
                 </div>
             `;
             
-            // Populating Edit Data if exists
+            // LOGIKA DEFAULT DATE & EDIT DATE
             if(editingJournalData) {
-                setTimeout(() => {
-                    document.getElementById('f-tgl').value = editingJournalData.tanggal.split('T')[0];
-                    document.getElementById('f-kelas').value = editingJournalData.kelas;
-                    document.getElementById('f-jam-mulai').value = editingJournalData.jam_mulai;
-                    document.getElementById('f-jam-selesai').value = editingJournalData.jam_selesai;
-                    document.getElementById('f-uraian').value = editingJournalData.uraian;
-                    if(isGuru) {
-                        document.getElementById('f-hadir').value = editingJournalData.jml_hadir;
-                        document.getElementById('f-sakit').value = editingJournalData.abs_sakit;
-                        document.getElementById('f-ijin').value = editingJournalData.abs_ijin;
-                        document.getElementById('f-alpha').value = editingJournalData.abs_alpha;
-                    }
-                    if(editingJournalData.foto) {
-                        document.getElementById('f-foto-img').src = editingJournalData.foto;
-                        document.getElementById('foto-preview-container').classList.remove('hidden');
-                    }
-                    handleKelasChange();
-                }, 50);
+                document.getElementById('f-tgl').value = editingJournalData.tanggal;
+                document.getElementById('f-kelas').value = editingJournalData.kelas;
+                document.getElementById('f-jam-mulai').value = editingJournalData.jam_mulai;
+                document.getElementById('f-jam-selesai').value = editingJournalData.jam_selesai;
+                document.getElementById('f-uraian').value = editingJournalData.uraian;
             } else {
-                document.getElementById('f-tgl').valueAsDate = new Date();
-                setTimeout(() => handleKelasChange(), 50); 
-            }
-        }
-
-        function handleKelasChange() {
-            const kelas = document.getElementById('f-kelas')?.value;
-            const containerKehadiran = document.getElementById('container-kehadiran');
-            const containerFoto = document.getElementById('container-foto');
-            const fUraian = document.getElementById('f-uraian');
-            
-            if (kelas === 'Istirahat') {
-                if (containerKehadiran) containerKehadiran.classList.add('hidden');
-                if (containerFoto) containerFoto.classList.add('hidden');
-                if (fUraian && fUraian.value.trim() === '') fUraian.value = 'Waktu Istirahat';
-            } else if (kelas === 'Umum') {
-                if (containerKehadiran) containerKehadiran.classList.add('hidden');
-                if (containerFoto) containerFoto.classList.remove('hidden');
-            } else {
-                if (containerKehadiran) containerKehadiran.classList.remove('hidden');
-                if (containerFoto) containerFoto.classList.remove('hidden');
-            }
-        }
-
-        async function previewSelectedFoto(input) {
-            if (input.files && input.files[0]) {
-                const container = document.getElementById('foto-preview-container');
-                const img = document.getElementById('f-foto-img');
-                const base64 = await compressImage(input.files[0], false); 
-                img.src = base64;
-                container.classList.remove('hidden');
+                document.getElementById('f-tgl').value = getTodayString();
             }
         }
 
         async function submitJurnal() {
             const form = document.getElementById('journal-form');
-            if(!form.checkValidity()) return notify('Lengkapi semua field yang wajib diisi!', 'warning');
-
+            if(!form.checkValidity()) return notify('Lengkapi data!', 'warning');
             showLoader(true);
             const data = {
                 id: editingJournalData ? editingJournalData.id : Date.now().toString(),
@@ -883,849 +391,113 @@
                 nama_user: editingJournalData ? editingJournalData.nama_user : currentUser.nama,
                 foto: document.getElementById('f-foto-img')?.src || ''
             };
-
-            if(currentUser.role === 'Guru' && data.kelas !== 'Istirahat' && data.kelas !== 'Umum') {
-                data.jml_hadir = document.getElementById('f-hadir').value;
-                data.abs_sakit = document.getElementById('f-sakit').value;
-                data.abs_ijin = document.getElementById('f-ijin').value;
-                data.abs_alpha = document.getElementById('f-alpha').value;
-            } else {
-                data.jml_hadir = 0; data.abs_sakit = 0; data.abs_ijin = 0; data.abs_alpha = 0;
-            }
-
-            const actionType = editingJournalData ? 'updateJournal' : 'saveJournal';
-
+            const action = editingJournalData ? 'updateJournal' : 'saveJournal';
             if(IS_PREVIEW) {
                 setTimeout(() => {
-                    if (editingJournalData) {
-                        // PERBAIKAN: Menggunakan String() untuk menghindari Type Mismatch
-                        const index = journalsData.findIndex(j => String(j.id) === String(data.id));
-                        if(index !== -1) journalsData[index] = data;
-                        notify('Jurnal berhasil diperbarui!');
-                    } else {
-                        journalsData.unshift(data);
-                        notify('Jurnal berhasil disimpan!');
-                    }
-                    showLoader(false);
-                    editingJournalData = null; // Reset
-                    renderPage('dashboard');
+                    if(editingJournalData) {
+                        const idx = journalsData.findIndex(j => String(j.id) === String(data.id));
+                        journalsData[idx] = data;
+                    } else journalsData.unshift(data);
+                    showLoader(false); editingJournalData = null; renderPage('dashboard'); notify('Berhasil!');
                 }, 1000);
             } else {
-                callBackend(actionType, { jurnalData: data }).then(res => {
+                callBackend(action, { jurnalData: data }).then(res => {
                     showLoader(false);
-                    if(res.status === 'success') {
-                        journalsData = res.journals;
-                        notify(editingJournalData ? 'Jurnal diperbarui!' : 'Jurnal disimpan!');
-                        editingJournalData = null; // Reset
-                        renderPage('dashboard'); // Redirect back to dashboard to see changes
-                    } else {
-                        notify(res.message, 'error');
-                    }
+                    if(res.status === 'success') { journalsData = res.journals; editingJournalData = null; renderPage('dashboard'); }
+                    else notify(res.message, 'error');
                 });
             }
         }
 
-        // --- MANAGE USERS RENDERER ---
-        function renderManageUsers(container) {
-            container.innerHTML = `
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                    <div>
-                        <h1 class="text-2xl font-bold text-gray-800">Kelola Anggota</h1>
-                        <p class="text-sm text-gray-500 mt-1">Manajemen data user dan hak akses sistem</p>
-                    </div>
-                    <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                        <button onclick="downloadUserTemplate()" class="flex-1 md:flex-none action-btn bg-white border border-emerald-200 text-emerald-600 px-3 py-2 rounded-xl hover:bg-emerald-50 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fas fa-file-excel"></i> Template
-                        </button>
-                        <button onclick="document.getElementById('excel-upload').click()" class="flex-1 md:flex-none action-btn bg-white border border-indigo-200 text-indigo-600 px-3 py-2 rounded-xl hover:bg-indigo-50 text-sm font-semibold flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fas fa-file-upload"></i> Upload
-                        </button>
-                        <input type="file" id="excel-upload" class="hidden" accept=".xlsx, .xls" onchange="handleExcelUpload(this)">
-                        
-                        <button onclick="showUserForm()" class="flex-1 md:flex-none action-btn bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 text-sm font-semibold flex items-center justify-center gap-2 shadow-md shadow-blue-600/30">
-                            <i class="fas fa-plus"></i> Tambah
-                        </button>
-                        <button onclick="handleDeleteAllUsers()" class="flex-1 md:flex-none action-btn bg-red-50 text-red-600 border border-red-100 px-4 py-2 rounded-xl hover:bg-red-100 text-sm font-semibold flex items-center justify-center gap-2">
-                            <i class="fas fa-trash-alt"></i> Bersihkan
-                        </button>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-100">
-                    <div class="overflow-x-auto max-h-[500px] overflow-y-auto relative">
-                        <table class="w-full text-left whitespace-nowrap min-w-[700px]">
-                            <thead class="sticky top-0 bg-gray-50/95 backdrop-blur z-10 shadow-sm border-b border-gray-200">
-                                <tr class="text-gray-500 text-[11px] uppercase tracking-wider">
-                                    <th class="p-4 font-semibold">Profil User</th>
-                                    <th class="p-4 font-semibold">NIP / ID</th>
-                                    <th class="p-4 font-semibold">Mapel</th>
-                                    <th class="p-4 font-semibold">Role Sistem</th>
-                                    <th class="p-4 font-semibold text-right pr-6">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-50">
-                                ${usersData.map(u => `
-                                    <tr class="hover:bg-blue-50/40 transition-colors group">
-                                        <td class="p-4 flex items-center gap-3">
-                                            <img src="${getAvatar(u.nama, u.foto)}" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm">
-                                            <span class="font-semibold text-gray-800 text-sm">${u.nama}</span>
-                                        </td>
-                                        <td class="p-4 font-mono text-sm text-gray-500">${u.nip}</td>
-                                        <td class="p-4 text-sm text-gray-600">
-                                            <span class="bg-gray-50 text-gray-600 py-1.5 px-3 rounded-lg text-xs font-medium border border-gray-100 inline-block">${u.mapel || '-'}</span>
-                                        </td>
-                                        <td class="p-4">
-                                            <span class="px-3 py-1.5 rounded-lg ${u.role==='Admin'?'bg-purple-50 text-purple-700':u.role==='Kepsek'?'bg-amber-50 text-amber-700':'bg-blue-50 text-blue-700'} text-[10px] font-bold uppercase tracking-wider border ${u.role==='Admin'?'border-purple-200':u.role==='Kepsek'?'border-amber-200':'border-blue-200'}">${u.role}</span>
-                                        </td>
-                                        <td class="p-4 text-right pr-6">
-                                            <div class="flex justify-end gap-2 transition-all duration-300">
-                                                <button onclick="showUserForm('${u.nip}')" title="Edit User" class="bg-white border border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white p-2 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 shadow-sm">
-                                                    <i class="fas fa-pen text-[13px]"></i>
-                                                </button>
-                                                <button onclick="deleteUser('${u.nip}')" title="Hapus User" class="bg-white border border-red-100 text-red-500 hover:bg-red-500 hover:text-white p-2 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300 shadow-sm">
-                                                    <i class="fas fa-trash text-[13px]"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
+        function editJournalEntry(id) {
+            editingJournalData = journalsData.find(j => String(j.id) === String(id));
+            if(editingJournalData) renderPage('input-jurnal');
         }
 
-        async function showUserForm(nip = null) {
-            const user = nip ? usersData.find(u => String(u.nip) === String(nip)) : { nip: '', nama: '', password: '', role: 'Guru', mapel: '', foto: '' };
-            
-            const { value: formValues } = await Swal.fire({
-                title: `<span class="text-xl font-bold text-gray-800">${nip ? 'Edit Data User' : 'Tambah User Baru'}</span>`,
-                html: `
-                    <div class="text-left space-y-4 h-[60vh] overflow-y-auto p-1 mt-4">
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Nomor Induk Pegawai (NIP)</label>
-                            <input id="swal-nip" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all" value="${user.nip}" ${nip ? 'disabled' : 'placeholder="Masukkan NIP/Username"'}>
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Nama Lengkap</label>
-                            <input id="swal-nama" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all" value="${user.nama}" placeholder="Nama beserta gelar">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Mata Pelajaran</label>
-                            <input id="swal-mapel" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all" value="${user.mapel || ''}" placeholder="Cth: Matematika, Umum, dll">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Password Sistem</label>
-                            <input id="swal-pass" type="password" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all" value="${user.password}" placeholder="Minimal 6 karakter">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Role Akun</label>
-                            <select id="swal-role" class="w-full p-3 border border-gray-200 rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none text-sm transition-all cursor-pointer">
-                                <option value="Guru" ${user.role==='Guru'?'selected':''}>Guru (User Biasa)</option>
-                                <option value="Kepsek" ${user.role==='Kepsek'?'selected':''}>Kepala Sekolah</option>
-                                <option value="Admin" ${user.role==='Admin'?'selected':''}>Admin (Full Akses)</option>
-                            </select>
-                        </div>
-                        <div class="pt-2">
-                            <label class="text-[11px] font-bold text-gray-500 uppercase block mb-2">Foto Profil (Opsional)</label>
-                            <div class="flex items-center gap-4">
-                                <img id="swal-img-preview" src="${getAvatar(user.nama, user.foto)}" class="w-16 h-16 rounded-full object-cover border-2 border-gray-200 shadow-sm" >
-                                <button onclick="document.getElementById('swal-file').click()" class="px-4 py-2 bg-blue-50 text-blue-600 rounded-lg text-sm font-semibold hover:bg-blue-100 transition-colors">
-                                    <i class="fas fa-camera mr-1"></i> Pilih Foto
-                                </button>
-                                <input type="file" id="swal-file" class="hidden" onchange="previewSwalFoto(this)">
-                            </div>
-                        </div>
-                    </div>
-                `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'Simpan Data',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'bg-blue-600 text-white rounded-xl px-6 py-2.5 font-bold shadow-md hover:bg-blue-700',
-                    cancelButton: 'bg-gray-100 text-gray-600 rounded-xl px-6 py-2.5 font-bold hover:bg-gray-200',
-                    popup: 'rounded-3xl p-4'
-                },
-                buttonsStyling: false,
-                preConfirm: () => {
-                    const imgSrc = document.getElementById('swal-img-preview').src;
-                    const finalFoto = imgSrc.startsWith('data:image') ? imgSrc : user.foto;
-
-                    return {
-                        nip: document.getElementById('swal-nip').value,
-                        nama: document.getElementById('swal-nama').value,
-                        mapel: document.getElementById('swal-mapel').value,
-                        password: document.getElementById('swal-pass').value,
-                        role: document.getElementById('swal-role').value,
-                        foto: finalFoto
-                    };
-                }
-            });
-
-            if (formValues) {
-                if(!formValues.nip || !formValues.nama) return notify('NIP dan Nama wajib diisi!', 'warning');
-                
-                showLoader(true);
-                if (IS_PREVIEW) {
-                    setTimeout(() => {
-                        if(nip) {
-                            const idx = usersData.findIndex(u => String(u.nip) === String(nip));
-                            usersData[idx] = formValues;
-                        } else {
-                            usersData.push(formValues);
-                        }
-                        showLoader(false);
-                        notify('Data user berhasil disimpan!');
-                        renderPage('manage-users');
-                    }, 1000);
-                } else {
-                    callBackend('saveUser', { userData: formValues }).then(res => {
-                        showLoader(false);
-                        if(res.status === 'success') {
-                            usersData = res.users;
-                            if (currentUser && currentUser.nip === formValues.nip) {
-                                currentUser = formValues;
-                                initApp();
-                            }
-                            renderPage('manage-users');
-                            notify('Berhasil disimpan!');
-                        } else {
-                            notify(res.message, 'error');
-                        }
-                    });
-                }
-            }
-        }
-
-        function previewSwalFoto(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    const compressed = await compressImage(input.files[0], true); 
-                    document.getElementById('swal-img-preview').src = compressed;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        // --- PROFILE RENDERER ---
-        function renderProfile(container) {
-            container.innerHTML = `
-                <div class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-center relative overflow-hidden mt-4">
-                    <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-br from-blue-600 to-indigo-800"></div>
-                    
-                    <div class="relative z-10 pt-8 mb-6 group inline-block">
-                        <img id="p-foto-preview" src="${getAvatar(currentUser.nama, currentUser.foto)}" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl transition-transform duration-300 group-hover:scale-105 bg-white">
-                        <label for="p-foto-input" class="absolute bottom-1 right-1 bg-white text-blue-600 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer hover:bg-gray-50 shadow-lg border border-gray-100 transition-colors z-20">
-                            <i class="fas fa-camera"></i>
-                            <input type="file" id="p-foto-input" class="hidden" accept="image/*" onchange="previewProfilePhoto(this)">
-                        </label>
-                    </div>
-                    
-                    <h2 class="text-xl font-bold text-gray-800 mb-1">${currentUser.nama}</h2>
-                    <p class="text-xs text-gray-500 font-medium bg-gray-100 inline-block px-3 py-1 rounded-full mb-6">${currentUser.role}</p>
-
-                    <div class="space-y-4 text-left">
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">NIP / Username</label>
-                            <input type="text" value="${currentUser.nip}" disabled class="w-full p-3.5 bg-gray-50 border border-gray-100 rounded-xl text-gray-400 font-mono text-sm">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Nama Lengkap</label>
-                            <input type="text" id="p-nama" value="${currentUser.nama}" class="w-full p-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none bg-gray-50 transition-all text-sm font-medium text-gray-700">
-                        </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1 block">Ubah Password</label>
-                            <input type="password" id="p-pass" value="${currentUser.password}" class="w-full p-3.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none bg-gray-50 transition-all text-sm font-medium text-gray-700">
-                        </div>
-                        <button onclick="updateProfile()" class="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition-all mt-4 shadow-lg shadow-blue-500/30 active:scale-[0.98] flex justify-center items-center gap-2">
-                            <i class="fas fa-save"></i> SIMPAN PERUBAHAN
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function previewProfilePhoto(input) {
-            if (input.files && input.files[0]) {
-                const base64 = await compressImage(input.files[0], true); 
-                document.getElementById('p-foto-preview').src = base64;
-            }
-        }
-
-        function updateProfile() {
-            showLoader(true);
-            
-            const imgPreviewSrc = document.getElementById('p-foto-preview').src;
-            const finalFoto = imgPreviewSrc.startsWith('data:image') ? imgPreviewSrc : currentUser.foto;
-
-            const newData = {
-                ...currentUser,
-                nama: document.getElementById('p-nama').value,
-                password: document.getElementById('p-pass').value,
-                foto: finalFoto
-            };
-
-            if(IS_PREVIEW) {
-                setTimeout(() => {
-                    currentUser = newData;
-                    const idx = usersData.findIndex(u => String(u.nip) === String(currentUser.nip));
-                    if(idx !== -1) usersData[idx] = newData;
-                    
-                    initApp();
-                    showLoader(false);
-                    notify('Profil berhasil diperbarui!');
-                }, 1000);
-            } else {
-                callBackend('saveUser', { userData: newData }).then(res => {
-                    showLoader(false);
-                    if(res.status === 'success') {
-                        currentUser = newData; 
-                        usersData = res.users;
-                        initApp();
-                        notify('Berhasil diperbarui!');
-                    } else {
-                        notify(res.message, 'error');
-                    }
-                });
-            }
-        }
-
-        // --- PRINTING LOGIC ---
+        // --- PRINTING ---
         async function handlePrintDialog() {
             const isAdminOrKepsek = currentUser.role === 'Admin' || currentUser.role === 'Kepsek';
-
-            let htmlContent = `
-                <div class="text-left space-y-4 p-2">
-                    <p class="text-sm text-gray-500 mb-4">Tentukan parameter data yang ingin Anda cetak. Kosongkan jika ingin mencetak semua data.</p>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Dari Tanggal</label>
-                            <input type="date" id="print-start" class="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-gray-50">
+            let guruOptions = "";
+            if (isAdminOrKepsek && usersData && usersData.length > 0) {
+                guruOptions = usersData
+                    .filter(u => u.role === 'Guru' || u.role === 'Kepsek')
+                    .map(u => `<option value="${u.nip}">${u.nama}</option>`)
+                    .join('');
+            }
+            const { value: filterValues } = await Swal.fire({
+                title: 'Filter Laporan',
+                html: `
+                    <div class="text-left space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="date" id="p-start" class="swal2-input m-0 w-full" placeholder="Mulai">
+                            <input type="date" id="p-end" class="swal2-input m-0 w-full" placeholder="Sampai">
                         </div>
-                        <div>
-                            <label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Sampai Tanggal</label>
-                            <input type="date" id="print-end" class="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-gray-50">
-                        </div>
-                    </div>
-            `;
-
-            if (isAdminOrKepsek) {
-                const guruOptions = usersData.filter(u => u.role === 'Guru' || u.role === 'Kepsek').map(u => `<option value="${u.nip}">${u.nama}</option>`).join('');
-                htmlContent += `
-                    <div class="mt-4">
-                        <label class="text-[11px] font-bold text-gray-500 uppercase block mb-1">Pilih Guru (Opsional)</label>
-                        <select id="print-guru" class="w-full p-2.5 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm bg-gray-50 cursor-pointer">
+                        ${isAdminOrKepsek ? `
+                        <select id="p-guru" class="swal2-input m-0 w-full">
                             <option value="">-- Semua Guru --</option>
                             ${guruOptions}
-                        </select>
+                        </select>` : ''}
                     </div>
-                `;
-            }
-            
-            htmlContent += `</div>`;
-
-            const { value: filterValues, isConfirmed } = await Swal.fire({
-                title: '<span class="text-xl font-bold text-gray-800">Filter Cetak Laporan</span>',
-                html: htmlContent,
-                showCancelButton: true,
-                confirmButtonText: '<i class="fas fa-print mr-2"></i> Buat Laporan',
-                cancelButtonText: 'Batal',
-                customClass: {
-                    confirmButton: 'bg-indigo-600 text-white rounded-xl px-6 py-2.5 font-bold shadow-md hover:bg-indigo-700',
-                    cancelButton: 'bg-gray-100 text-gray-600 rounded-xl px-6 py-2.5 font-bold hover:bg-gray-200',
-                    popup: 'rounded-3xl p-4'
-                },
-                buttonsStyling: false,
-                preConfirm: () => {
-                    return {
-                        start: document.getElementById('print-start').value,
-                        end: document.getElementById('print-end').value,
-                        nipGuru: isAdminOrKepsek ? document.getElementById('print-guru').value : currentUser.nip
-                    };
-                }
+                `,
+                preConfirm: () => ({
+                    start: document.getElementById('p-start').value,
+                    end: document.getElementById('p-end').value,
+                    nip: isAdminOrKepsek ? document.getElementById('p-guru').value : currentUser.nip
+                })
             });
 
-            if (isConfirmed && filterValues) {
+            if(filterValues) {
                 let filtered = journalsData;
-
-                if (filterValues.nipGuru) {
-                    filtered = filtered.filter(j => j.nip_user === filterValues.nipGuru);
-                } else if (currentUser.role === 'Guru') {
-                    filtered = filtered.filter(j => j.nip_user === currentUser.nip);
-                }
-
-                if (filterValues.start) filtered = filtered.filter(j => j.tanggal >= filterValues.start);
-                if (filterValues.end) filtered = filtered.filter(j => j.tanggal <= filterValues.end);
-
-                printReport(filtered, filterValues.nipGuru);
+                if(filterValues.nip) filtered = filtered.filter(j => j.nip_user === filterValues.nip);
+                if(filterValues.start) filtered = filtered.filter(j => j.tanggal >= filterValues.start);
+                if(filterValues.end) filtered = filtered.filter(j => j.tanggal <= filterValues.end);
+                printReport(filtered, filterValues.nip);
             }
         }
 
-        function printReport(dataToPrint, filterNipGuru = null) {
-            if (!dataToPrint || dataToPrint.length === 0) return notify('Tidak ada data untuk dicetak pada filter tersebut', 'warning');
-
-            const kepsek = { nama: 'Ni Kadek Yadnyani, S.Pd', nip: '197910162006042006' };
-            
-            let guruInfoNama = currentUser.nama;
-            let guruInfoNip = currentUser.nip;
-            let isKepsekFormat = false;
-            
-            if (filterNipGuru) {
-                const targetUser = usersData.find(u => String(u.nip) === String(filterNipGuru));
-                if (targetUser) {
-                    guruInfoNama = targetUser.nama;
-                    guruInfoNip = targetUser.nip;
-                    if (targetUser.role === 'Kepsek') {
-                        isKepsekFormat = true;
-                    }
-                }
-            } else if (currentUser.role === 'Kepsek') {
-                isKepsekFormat = true;
-            } else if (currentUser.role === 'Admin') {
-                const uniqueGurus = [...new Set(dataToPrint.map(j => j.nip_user))];
-                if (uniqueGurus.length === 1) {
-                    const targetUser = usersData.find(u => u.nip === uniqueGurus[0]);
-                    if (targetUser) {
-                        guruInfoNama = targetUser.nama;
-                        guruInfoNip = targetUser.nip;
-                        if (targetUser.role === 'Kepsek') {
-                            isKepsekFormat = true;
-                        }
-                    } else {
-                        guruInfoNama = dataToPrint[0].nama_user;
-                        guruInfoNip = dataToPrint[0].nip_user;
-                    }
-                } else {
-                    guruInfoNama = "Semua Guru";
-                    guruInfoNip = "-";
-                }
-            }
-
+        function printReport(data, filterNip) {
+            if(!data.length) return notify('Data kosong!', 'warning');
+            const target = usersData.find(u => u.nip === (filterNip || currentUser.nip)) || currentUser;
             const printWin = window.open('', '_blank');
-            
-            const sortedData = [...dataToPrint].sort((a, b) => {
-                const dateA = new Date(a.tanggal);
-                const dateB = new Date(b.tanggal);
-                if (dateA < dateB) return -1;
-                if (dateA > dateB) return 1;
-                
-                const jamA = parseInt(a.jam_mulai) || 0;
-                const jamB = parseInt(b.jam_mulai) || 0;
-                return jamA - jamB;
-            });
-
-            let dateSpans = {};
-            sortedData.forEach(j => {
-                const isIstirahat = j.kelas === 'Istirahat';
-                let rSpan = 1;
-                if (!isNaN(j.jam_mulai) && !isNaN(j.jam_selesai)) {
-                    let start = parseInt(j.jam_mulai);
-                    let end = parseInt(j.jam_selesai);
-                    if (end >= start && !isIstirahat) {
-                        rSpan = end - start + 1;
-                    }
-                }
-                j.calculatedRowSpan = rSpan;
-
-                if(!dateSpans[j.tanggal]) dateSpans[j.tanggal] = 0;
-                dateSpans[j.tanggal] += rSpan;
-            });
-
-            let tableHeader = isKepsekFormat ? `
-                <tr>
-                    <th style="width: 5%; text-align: center !important;">No</th>
-                    <th style="width: 18%; text-align: center !important;">Hari/Tanggal</th>
-                    <th style="width: 8%; text-align: center !important;">Jam Ke</th>
-                    <th style="text-align: center !important;">Uraian Kegiatan</th>
-                    <th style="width: 25%; text-align: center !important;">Dokumentasi</th>
-                </tr>
-            ` : `
-                <tr>
-                    <th rowspan="2" style="width: 4%; text-align: center !important;">No</th>
-                    <th rowspan="2" style="width: 13%; text-align: center !important;">Hari /<br>Tanggal</th>
-                    <th rowspan="2" style="width: 6%; text-align: center !important;">Jam Ke</th>
-                    <th rowspan="2" style="width: 8%; text-align: center !important;">Kelas</th>
-                    <th rowspan="2" style="text-align: center !important;">Uraian Kegiatan / Pokok Bahasan</th>
-                    <th colspan="4" style="width: 16%; text-align: center !important;">Kehadiran Siswa</th>
-                    <th rowspan="2" style="width: 18%; text-align: center !important;">Dokumentasi</th>
-                </tr>
-                <tr>
-                    <th style="background-color: #86efac; width: 4%; text-align: center !important;">H</th>
-                    <th style="background-color: #fde047; width: 4%; text-align: center !important;">S</th>
-                    <th style="background-color: #93c5fd; width: 4%; text-align: center !important;">I</th>
-                    <th style="background-color: #fca5a5; width: 4%; text-align: center !important;">A</th>
-                </tr>
-            `;
-
-            let tableRows = "";
-            let processedDates = {};
-            let dateCounter = 0; 
-
-            sortedData.forEach((j, index) => {
-                const isIstirahat = j.kelas === 'Istirahat';
-                const isUmum = j.kelas === 'Umum';
-                
-                const dayStr = new Date(j.tanggal).toLocaleDateString('id-ID', { weekday: 'long' });
-                const dateStr = new Date(j.tanggal).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                const dateDisplay = dayStr + ",<br>" + dateStr;
-                
-                let rowSpan = j.calculatedRowSpan;
-                let jamList = [j.jam_mulai];
-                if (rowSpan > 1) {
-                    let start = parseInt(j.jam_mulai);
-                    let end = parseInt(j.jam_selesai);
-                    jamList = [];
-                    for(let k = start; k <= end; k++) jamList.push(k);
-                }
-
-                let rowHTML = "<tr>";
-                
-                // JIKA TANGGAL BELUM PERNAH DICETAK, BUAT TD UNTUK NO & TANGGAL DENGAN ROWSPAN TOTAL HARI ITU
-                if (!processedDates[j.tanggal]) {
-                    dateCounter++;
-                    rowHTML += "<td class='center' rowspan='" + dateSpans[j.tanggal] + "'>" + dateCounter + "</td>";
-                    rowHTML += "<td class='center' rowspan='" + dateSpans[j.tanggal] + "'>" + dateDisplay + "</td>";
-                    processedDates[j.tanggal] = true;
-                }
-
-                if (isKepsekFormat) {
-                    if (isIstirahat) {
-                        rowHTML += "<td colspan='3' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
-                    } else {
-                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
-                        rowHTML += "<td rowspan='" + rowSpan + "' style='vertical-align: middle !important; padding-left: 8px;'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
-                        for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
-                        }
-                    }
-                } else {
-                    if (isIstirahat) {
-                        rowHTML += "<td colspan='8' class='bg-istirahat' style='background-color: #e0f2fe !important;'>ISTIRAHAT</td></tr>";
-                    } else if (isUmum) {
-                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
-                        rowHTML += "<td colspan='6' rowspan='" + rowSpan + "' class='bg-istirahat' style='background-color: white !important; font-weight: normal; font-style: normal; text-align: left !important; padding-left: 8px; vertical-align: middle !important;'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
-                        
-                        for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
-                        }
-                    } else {
-                        rowHTML += "<td class='center'>" + jamList[0] + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.kelas + "</td>";
-                        rowHTML += "<td rowspan='" + rowSpan + "' style='vertical-align: middle !important; padding-left: 8px;'>" + j.uraian + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.jml_hadir + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_sakit + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_ijin + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + j.abs_alpha + "</td>";
-                        rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (j.foto ? "<img src='" + j.foto + "' class='doc'>" : "-") + "</td></tr>";
-                        
-                        for (let k = 1; k < jamList.length; k++) {
-                            rowHTML += "<tr><td class='center'>" + jamList[k] + "</td></tr>";
-                        }
-                    }
-                }
-                tableRows += rowHTML;
-            });
-
-            // LOGIC UNTUK MEMISAHKAN FORMAT TANDA TANGAN KEPSEK DAN GURU
-            let footerHTML = "";
-            if (isKepsekFormat) {
-                footerHTML = `
-                    <table>
-                        <tr>
-                            <td style="text-align: left !important; padding-left: 5%;">Mengetahui<br>Pengawas<br><br><br><br><br>.......................................................<br>NIP.</td>
-                            <td style="text-align: left !important; padding-left: 15%;">Dawan, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}<br>Kepala SMP Negeri 1 Dawan<br><br><br><br><br>${kepsek.nama}<br>NIP. ${kepsek.nip}</td>
-                        </tr>
-                    </table>
-                `;
-            } else {
-                footerHTML = `
-                    <table>
-                        <tr>
-                            <td>Mengetahui,<br>Kepala SMP Negeri 1 Dawan<br><br><br><br><br><b><u>${kepsek.nama}</u></b><br>NIP. ${kepsek.nip}</td>
-                            <td>Dawan, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}<br>Guru Mata Pelajaran<br><br><br><br><br><b><u>${guruInfoNama}</u></b><br>${guruInfoNip !== '-' ? 'NIP. ' + guruInfoNip : ''}</td>
-                        </tr>
-                    </table>
-                `;
-            }
-
-            const htmlString = `
-                <html>
-                <head>
-                    <title>Cetak Laporan Jurnal</title>
-                    <style>
-                        @page { size: A4 portrait; margin: 1cm; }
-                        body { font-family: 'Times New Roman', serif; font-size: 10pt; line-height: 1.3; color: black; }
-                        .kop { text-align: center; margin-bottom: 15px; width: 100%; }
-                        .kop img { width: 100%; height: auto; display: block; object-fit: contain; }
-                        h2 { text-align: center; text-transform: uppercase; margin: 10px 0 25px 0; font-size: 14pt; font-weight: bold;}
-                        table.data { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                        table.data th, table.data td { border: 1px solid black; padding: 5px; text-align: left; vertical-align: middle; }
-                        table.data th { text-align: center !important; font-weight: bold; background-color: #dae8f5; }
-                        .bg-istirahat { text-align: center !important; vertical-align: middle !important; font-weight: bold; font-style: italic; }
-                        .center { text-align: center !important; vertical-align: middle !important; }
-                        .footer { margin-top: 30px; width: 100%; page-break-inside: avoid; }
-                        .footer table { border: none !important; width: 100%; }
-                        .footer td { border: none !important; width: 50%; padding-top: 10px; text-align: center !important; vertical-align: top !important; }
-                        img.doc { max-width: 100px; max-height: 100px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; display: block; margin: 0 auto; }
-                    </style>
-                </head>
-                <body>
-                    <div class="kop"><img src="${PRINT_KOP}" alt="KOP SURAT DINAS"></div>
-                    <h2>JURNAL KEGIATAN BELAJAR MENGAJAR</h2>
-
-                    <table class="data">
-                        <thead>${tableHeader}</thead>
-                        <tbody>${tableRows}</tbody>
-                    </table>
-
-                    <div class="footer">
-                        ${footerHTML}
-                    </div>
-                    <script>setTimeout(() => window.print(), 500);<\/script>
-                </body>
-                </html>
-            `;
-            printWin.document.write(htmlString);
+            const rows = data.sort((a,b)=>a.tanggal.localeCompare(b.tanggal)).map((j, i) => `
+                <tr><td>${i+1}</td><td>${j.tanggal}</td><td>${j.jam_mulai}-${j.jam_selesai}</td><td>${j.kelas}</td><td>${j.uraian}</td></tr>
+            `).join('');
+            printWin.document.write(`
+                <html><head><style>table{width:100%;border-collapse:collapse;}th,td{border:1px solid black;padding:5px;text-align:center;}</style></head>
+                <body><h2 style="text-align:center;">JURNAL MENGAJAR</h2>
+                <p>Nama: ${target.nama}<br>NIP: ${target.nip}</p>
+                <table><thead><tr><th>No</th><th>Tanggal</th><th>Jam</th><th>Kelas</th><th>Materi</th></tr></thead><tbody>${rows}</tbody></table>
+                <script>window.print();<\/script></body></html>
+            `);
             printWin.document.close();
         }
 
-        async function handleBulkDelete() {
-            const { value: type } = await Swal.fire({
-                title: 'Hapus Data Jurnal',
-                input: 'select',
-                inputOptions: {
-                    'range': 'Berdasarkan Tanggal',
-                    'guru': 'Berdasarkan Guru',
-                    'all': 'Hapus Seluruh Data'
-                },
-                inputPlaceholder: 'Pilih jenis penghapusan',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Lanjutkan',
-                cancelButtonText: 'Batal'
-            });
-
-            if(type === 'all') {
-                const confirm = await Swal.fire({
-                    title: 'Anda yakin?',
-                    text: 'Semua data jurnal akan dihapus permanen!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33'
-                });
-                if(confirm.isConfirmed) {
-                    showLoader(true);
-                    if (IS_PREVIEW) {
-                        setTimeout(() => {
-                            journalsData = [];
-                            showLoader(false);
-                            renderPage('dashboard');
-                            notify('Seluruh data dihapus');
-                        }, 1000);
-                    } else {
-                        callBackend('deleteJournalsGAS', { type: 'all' }).then(res => {
-                            showLoader(false);
-                            if(res.status === 'success') {
-                                journalsData = res.journals;
-                                renderPage('dashboard');
-                                notify('Seluruh data dihapus');
-                            } else {
-                                notify(res.message, 'error');
-                            }
-                        });
-                    }
-                }
-            } else if (type === 'range') {
-                const { value: dates } = await Swal.fire({
-                    title: 'Pilih Rentang',
-                    html: '<input type="date" id="d-start" class="swal2-input"><input type="date" id="d-end" class="swal2-input">',
-                    preConfirm: () => [document.getElementById('d-start').value, document.getElementById('d-end').value]
-                });
-                if(dates[0] && dates[1]) {
-                    showLoader(true);
-                    if (IS_PREVIEW) {
-                        setTimeout(() => {
-                            journalsData = journalsData.filter(j => j.tanggal < dates[0] || j.tanggal > dates[1]);
-                            showLoader(false);
-                            renderPage('dashboard');
-                            notify('Data berhasil dihapus');
-                        }, 1000);
-                    } else {
-                        callBackend('deleteJournalsGAS', { type: 'range', start: dates[0], end: dates[1] }).then(res => {
-                            showLoader(false);
-                            if(res.status === 'success') {
-                                journalsData = res.journals;
-                                renderPage('dashboard');
-                                notify('Data rentang tanggal berhasil dihapus');
-                            } else {
-                                notify(res.message, 'error');
-                            }
-                        });
-                    }
-                }
-            } else if (type === 'guru') {
-                const { value: nip } = await Swal.fire({
-                    title: 'Hapus Data Guru',
-                    input: 'text',
-                    inputPlaceholder: 'Masukkan NIP Guru'
-                });
-                if(nip) {
-                    showLoader(true);
-                    if (IS_PREVIEW) {
-                        setTimeout(() => {
-                            journalsData = journalsData.filter(j => String(j.nip_user) !== String(nip));
-                            showLoader(false);
-                            renderPage('dashboard');
-                            notify('Data guru tersebut dihapus');
-                        }, 1000);
-                    } else {
-                        callBackend('deleteJournalsGAS', { type: 'guru', nip: nip }).then(res => {
-                            showLoader(false);
-                            if(res.status === 'success') {
-                                journalsData = res.journals;
-                                renderPage('dashboard');
-                                notify('Data jurnal guru berhasil dihapus');
-                            } else {
-                                notify(res.message, 'error');
-                            }
-                        });
-                    }
-                }
-            }
+        // --- MANAGE USERS ---
+        function renderManageUsers(container) {
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-6">
+                    <h1 class="text-2xl font-bold">Kelola Anggota</h1>
+                    <button onclick="showUserForm()" class="bg-blue-600 text-white px-4 py-2 rounded-xl text-sm font-semibold">+ Tambah</button>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm overflow-hidden border">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50 text-[11px] uppercase"><tr><th class="p-4">Nama</th><th class="p-4">NIP</th><th class="p-4">Role</th></tr></thead>
+                        <tbody class="divide-y">${usersData.map(u=>`<tr><td class="p-4 text-sm font-semibold">${u.nama}</td><td class="p-4 text-sm">${u.nip}</td><td class="p-4 text-sm">${u.role}</td></tr>`).join('')}</tbody>
+                    </table>
+                </div>
+            `;
         }
 
-        function downloadUserTemplate() {
-            const data = [
-                ['NIP', 'Nama', 'Password', 'Mapel', 'Role (Admin/Kepsek/Guru)', 'Foto (URL/Base64)']
-            ];
-            const ws = XLSX.utils.aoa_to_sheet(data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Template");
-            XLSX.writeFile(wb, "Template_User_Jaguar.xlsx");
-        }
-
-        function handleExcelUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, {type: 'array'});
-                const sheet = workbook.Sheets[workbook.SheetNames[0]];
-                const rows = XLSX.utils.sheet_to_json(sheet);
-                
-                const newUsers = rows.map(r => ({
-                    nip: String(r.NIP || r.nip || '').trim(),
-                    nama: String(r.Nama || r.nama || '').trim(),
-                    password: String(r.Password || r.password || '123456').trim(),
-                    mapel: String(r.Mapel || r.mapel || '-').trim(),
-                    role: String(r.Role || r.role || 'Guru').trim(),
-                    foto: String(r.Foto || r.foto || '').trim()
-                })).filter(u => u.nip && u.nama);
-
-                if(newUsers.length > 0) {
-                    showLoader(true);
-                    if (IS_PREVIEW) {
-                        setTimeout(() => {
-                            usersData = [...usersData, ...newUsers];
-                            showLoader(false);
-                            renderPage('manage-users');
-                            notify(`Berhasil mengunggah ${newUsers.length} user (Preview)!`);
-                        }, 1000);
-                    } else {
-                        callBackend('saveUsersBulkGAS', { newUsersArray: newUsers }).then(res => {
-                            showLoader(false);
-                            if(res.status === 'success') {
-                                usersData = res.users;
-                                renderPage('manage-users');
-                                notify(`Berhasil menyimpan ${newUsers.length} user ke database!`);
-                            } else {
-                                notify('Gagal menyimpan ke database: ' + res.message, 'error');
-                            }
-                        });
-                    }
-                } else {
-                    notify('Tidak ada data valid yang ditemukan di Excel.', 'warning');
-                }
-            };
-            reader.readAsArrayBuffer(file);
-            input.value = ''; 
-        }
-
-        function deleteUser(nip) {
-            Swal.fire({
-                title: 'Hapus User?',
-                text: "Data user yang dihapus tidak bisa dikembalikan!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Ya, Hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoader(true);
-                    if (IS_PREVIEW) {
-                        setTimeout(() => {
-                            usersData = usersData.filter(u => String(u.nip) !== String(nip));
-                            showLoader(false);
-                            notify('User berhasil dihapus');
-                            renderPage('manage-users');
-                        }, 1000);
-                    } else {
-                        callBackend('deleteUserGAS', { nip: nip }).then(res => {
-                            showLoader(false);
-                            if(res.status === 'success') {
-                                usersData = res.users;
-                                renderPage('manage-users');
-                                notify('User berhasil dihapus');
-                            } else {
-                                notify(res.message, 'error');
-                            }
-                        });
-                    }
-                }
-            });
-        }
-
-        function handleDeleteAllUsers() {
-            Swal.fire({
-                title: 'Hapus SEMUA User?',
-                text: "Tindakan ini akan menghapus SEMUA user KECUALI akun Anda yang sedang login saat ini!",
-                icon: 'error',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Ya, Hapus Semua!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    showLoader(true);
-                    if (IS_PREVIEW) {
-                        setTimeout(() => {
-                            usersData = usersData.filter(u => String(u.nip) === String(currentUser.nip));
-                            showLoader(false);
-                            notify('Semua user lain berhasil dihapus');
-                            renderPage('manage-users');
-                        }, 1000);
-                    } else {
-                        callBackend('deleteAllUsersGAS', { currentAdminNip: currentUser.nip }).then(res => {
-                            showLoader(false);
-                            if(res.status === 'success') {
-                                usersData = res.users;
-                                renderPage('manage-users');
-                                notify('Semua user lain berhasil dihapus');
-                            } else {
-                                notify(res.message, 'error');
-                            }
-                        });
-                    }
-                }
-            });
+        function renderProfile(container) {
+            container.innerHTML = `<div class="max-w-md mx-auto bg-white p-8 rounded-3xl shadow-sm border text-center">
+                <img src="${getAvatar(currentUser.nama, currentUser.foto)}" class="w-24 h-24 rounded-full mx-auto mb-4 border">
+                <h2 class="font-bold text-xl">${currentUser.nama}</h2><p class="text-gray-500 mb-6">${currentUser.role}</p>
+                <div class="text-left space-y-4">
+                    <input type="text" value="${currentUser.nip}" disabled class="w-full p-3 border rounded-xl bg-gray-50">
+                    <input type="text" id="p-nama" value="${currentUser.nama}" class="w-full p-3 border rounded-xl">
+                    <button onclick="updateProfile()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl">SIMPAN</button>
+                </div>
+            </div>`;
         }
     </script>
 </body>
