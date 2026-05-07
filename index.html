@@ -69,8 +69,8 @@
     <!-- KONFIGURASI APLIKASI -->
     <script>
         // UBAH IS_PREVIEW KE false JIKA AKAN DI-DEPLOY KE BLOGGER / GITHUB
-        const IS_PREVIEW = false; 
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxsMy19c4je9Icwkd42Ay5bM7zArPtzla6XNJ3uem6optOfssA9vmdD69RYmmd8kG-m/exec"; 
+        const IS_PREVIEW = false; // Diatur true untuk Canvas sesuai SOP
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyuzyo6XwEKP0_EuE9D1C4ygCswbAGYJ_gYM3IfWM-sYJZRC-JtIOq2n7lP9WJ2294_/exec"; 
         const APP_LOGO = "https://i.imghippo.com/files/RG1026Lg.png";
         const PRINT_KOP = "https://i.imghippo.com/files/tuTX6225pKs.png";
     </script>
@@ -179,15 +179,6 @@
             return `https://ui-avatars.com/api/?name=${encodeURIComponent(nama || 'User')}&background=eff6ff&color=2563eb&bold=true&rounded=true`;
         };
 
-        const getTodayString = () => {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        };
-
-        // Dummy Data
         const dummyUsers = [
             { nip: 'admin', nama: 'Admin Jaguar', password: 'edudigital', role: 'Admin', foto: '', mapel: '-' },
             { nip: 'kepsek', nama: 'Kepala Sekolah, M.Pd', password: 'edudigital', role: 'Kepsek', foto: '', mapel: '-' },
@@ -348,7 +339,7 @@
         }
 
         function resetAndGoToInput() {
-            editingJournalData = null; // Clear edit mode if user clicks "Isi Jurnal Baru" explicitly
+            editingJournalData = null; // Clear edit mode
             renderPage('input-jurnal');
         }
 
@@ -574,7 +565,16 @@
             `).join('');
         }
 
+        // PERBAIKAN: FormatDate dibuat aman dari pergeseran Timezone dengan parse string manual
         function formatDate(d) {
+            if (!d) return '-';
+            if (typeof d === 'string' && d.includes('-') && !d.includes('T')) {
+                const parts = d.split('-');
+                if (parts.length === 3) {
+                    const date = new Date(parts[0], parseInt(parts[1]) - 1, parts[2]);
+                    return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+                }
+            }
             const date = new Date(d);
             return date.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
         }
@@ -818,12 +818,13 @@
                 </div>
             `;
             
+            // Populating Edit Data if exists
             if(editingJournalData) {
                 setTimeout(() => {
-                    // PERBAIKAN: Memastikan tanggal dari backend di-split dengan baik tanpa pergeseran
-                    let formattedDate = editingJournalData.tanggal;
-                    if(formattedDate.includes('T')) formattedDate = formattedDate.split('T')[0];
-                    document.getElementById('f-tgl').value = formattedDate;
+                    // PERBAIKAN: Memastikan string dipotong dengan aman
+                    let editDate = editingJournalData.tanggal;
+                    if (editDate && editDate.includes('T')) editDate = editDate.split('T')[0];
+                    document.getElementById('f-tgl').value = editDate;
                     
                     document.getElementById('f-kelas').value = editingJournalData.kelas;
                     document.getElementById('f-jam-mulai').value = editingJournalData.jam_mulai;
@@ -842,9 +843,13 @@
                     handleKelasChange();
                 }, 50);
             } else {
+                // PERBAIKAN: Default tanggal hari ini berdasarkan zona waktu lokal 
                 setTimeout(() => {
-                    // PERBAIKAN: Menggunakan getTodayString() untuk default date
-                    document.getElementById('f-tgl').value = getTodayString();
+                    const today = new Date();
+                    const yyyy = today.getFullYear();
+                    const mm = String(today.getMonth() + 1).padStart(2, '0');
+                    const dd = String(today.getDate()).padStart(2, '0');
+                    document.getElementById('f-tgl').value = `${yyyy}-${mm}-${dd}`;
                     handleKelasChange();
                 }, 50); 
             }
@@ -928,7 +933,7 @@
                         journalsData = res.journals;
                         notify(editingJournalData ? 'Jurnal diperbarui!' : 'Jurnal disimpan!');
                         editingJournalData = null; // Reset
-                        renderPage('dashboard'); 
+                        renderPage('dashboard'); // Redirect back to dashboard to see changes
                     } else {
                         notify(res.message, 'error');
                     }
