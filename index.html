@@ -627,11 +627,14 @@
         }
 
         // --- EDIT & HAPUS INDIVIDUAL ---
+        // PERBAIKAN: Menggunakan String() untuk menghindari masalah Type Mismatch (Number vs String)
         function editJournalEntry(id) {
-            const entry = journalsData.find(j => j.id === id);
+            const entry = journalsData.find(j => String(j.id) === String(id));
             if(entry) {
                 editingJournalData = entry;
                 renderPage('input-jurnal');
+            } else {
+                notify('Data jurnal tidak ditemukan.', 'error');
             }
         }
 
@@ -649,7 +652,8 @@
                     showLoader(true);
                     if (IS_PREVIEW) {
                         setTimeout(() => {
-                            journalsData = journalsData.filter(j => j.id !== id);
+                            // PERBAIKAN: Menggunakan String() untuk filtering 
+                            journalsData = journalsData.filter(j => String(j.id) !== String(id));
                             applyFilters(); 
                             showLoader(false);
                             notify('Jurnal berhasil dihapus');
@@ -894,7 +898,8 @@
             if(IS_PREVIEW) {
                 setTimeout(() => {
                     if (editingJournalData) {
-                        const index = journalsData.findIndex(j => j.id === data.id);
+                        // PERBAIKAN: Menggunakan String() untuk menghindari Type Mismatch
+                        const index = journalsData.findIndex(j => String(j.id) === String(data.id));
                         if(index !== -1) journalsData[index] = data;
                         notify('Jurnal berhasil diperbarui!');
                     } else {
@@ -992,7 +997,7 @@
         }
 
         async function showUserForm(nip = null) {
-            const user = nip ? usersData.find(u => u.nip === nip) : { nip: '', nama: '', password: '', role: 'Guru', mapel: '', foto: '' };
+            const user = nip ? usersData.find(u => String(u.nip) === String(nip)) : { nip: '', nama: '', password: '', role: 'Guru', mapel: '', foto: '' };
             
             const { value: formValues } = await Swal.fire({
                 title: `<span class="text-xl font-bold text-gray-800">${nip ? 'Edit Data User' : 'Tambah User Baru'}</span>`,
@@ -1066,7 +1071,7 @@
                 if (IS_PREVIEW) {
                     setTimeout(() => {
                         if(nip) {
-                            const idx = usersData.findIndex(u => u.nip === nip);
+                            const idx = usersData.findIndex(u => String(u.nip) === String(nip));
                             usersData[idx] = formValues;
                         } else {
                             usersData.push(formValues);
@@ -1166,7 +1171,7 @@
             if(IS_PREVIEW) {
                 setTimeout(() => {
                     currentUser = newData;
-                    const idx = usersData.findIndex(u => u.nip === currentUser.nip);
+                    const idx = usersData.findIndex(u => String(u.nip) === String(currentUser.nip));
                     if(idx !== -1) usersData[idx] = newData;
                     
                     initApp();
@@ -1573,7 +1578,7 @@
                     showLoader(true);
                     if (IS_PREVIEW) {
                         setTimeout(() => {
-                            journalsData = journalsData.filter(j => j.nip_user !== nip);
+                            journalsData = journalsData.filter(j => String(j.nip_user) !== String(nip));
                             showLoader(false);
                             renderPage('dashboard');
                             notify('Data guru tersebut dihapus');
@@ -1667,7 +1672,7 @@
                     showLoader(true);
                     if (IS_PREVIEW) {
                         setTimeout(() => {
-                            usersData = usersData.filter(u => u.nip !== nip);
+                            usersData = usersData.filter(u => String(u.nip) !== String(nip));
                             showLoader(false);
                             notify('User berhasil dihapus');
                             renderPage('manage-users');
@@ -1702,7 +1707,7 @@
                     showLoader(true);
                     if (IS_PREVIEW) {
                         setTimeout(() => {
-                            usersData = usersData.filter(u => u.nip === currentUser.nip);
+                            usersData = usersData.filter(u => String(u.nip) === String(currentUser.nip));
                             showLoader(false);
                             notify('Semua user lain berhasil dihapus');
                             renderPage('manage-users');
