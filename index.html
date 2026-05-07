@@ -68,9 +68,9 @@
 
     <!-- KONFIGURASI APLIKASI -->
     <script>
-        // UBAH IS_PREVIEW KE false JIKA AKAN DI-DEPLOY KE BLOGGER
+        // UBAH IS_PREVIEW KE false JIKA AKAN DI-DEPLOY KE BLOGGER / GITHUB
         const IS_PREVIEW = false; 
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbxVV7i78uQFznHbIQ9MtfpdLNm44rRegtvnM729ufC96oYpnMLRmK6Z1HkMG-EpkhY/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwUUCisrwAJeBt6mEiyjuD2KjkZtx6ZVutM-BfzeTdwN0ZMSbObvaogD6DCk46f_w/exec"; 
         const APP_LOGO = "https://i.imghippo.com/files/RG1026Lg.png";
         const PRINT_KOP = "https://i.imghippo.com/files/tuTX6225pKs.png";
     </script>
@@ -384,11 +384,14 @@
         }
 
         // --- DASHBOARD RENDERER ---
-        function renderDashboard(container) {
-            let dataToShow = journalsData;
+        function renderDashboard(container, filteredData = null, filterState = {}) {
+            let dataToShow = filteredData;
             
-            if(currentUser.role === 'Guru') {
-                dataToShow = journalsData.filter(j => j.nip_user === currentUser.nip);
+            if (!dataToShow) {
+                dataToShow = journalsData;
+                if(currentUser.role === 'Guru') {
+                    dataToShow = journalsData.filter(j => j.nip_user === currentUser.nip);
+                }
             }
 
             currentFilteredJournals = dataToShow; 
@@ -405,6 +408,10 @@
                     totalHadirSiswa += parseInt(j.jml_hadir) || 0;
                 }
             });
+
+            const startVal = filterState.start || '';
+            const endVal = filterState.end || '';
+            const nameVal = filterState.name || '';
 
             container.innerHTML = `
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -456,18 +463,18 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 ${currentUser.role === 'Guru' ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-4 items-end">
                         <div>
                             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Dari Tanggal</label>
-                            <input type="date" id="filter-start" class="w-full p-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
+                            <input type="date" id="filter-start" value="${startVal}" class="w-full p-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
                         </div>
                         <div>
                             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Sampai Tanggal</label>
-                            <input type="date" id="filter-end" class="w-full p-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
+                            <input type="date" id="filter-end" value="${endVal}" class="w-full p-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700">
                         </div>
                         ${currentUser.role !== 'Guru' ? `
                         <div>
                             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2 block">Nama Guru</label>
                             <div class="relative group">
                                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 group-focus-within:text-blue-500 transition-colors"><i class="fas fa-search"></i></span>
-                                <input type="text" id="filter-name" placeholder="Ketik nama..." class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700 placeholder-gray-400">
+                                <input type="text" id="filter-name" value="${nameVal}" placeholder="Ketik nama..." class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none transition-all bg-gray-50 focus:bg-white text-gray-700 placeholder-gray-400">
                             </div>
                         </div>
                         ` : ''}
@@ -545,9 +552,6 @@
                     </td>
                     <td class="p-4 align-top text-center">
                         <div class="flex justify-center gap-2">
-                            <button onclick="openPrintPreview('${j.id}')" title="Cetak" class="bg-white border border-indigo-100 text-indigo-600 hover:bg-indigo-600 hover:text-white p-2 w-9 h-9 rounded-xl inline-flex items-center justify-center transition-all duration-300 shadow-sm">
-                                <i class="fas fa-print text-sm"></i>
-                            </button>
                             ${(currentUser.role === 'Admin' || currentUser.nip === j.nip_user) ? `
                             <button onclick="editJournalEntry('${j.id}')" title="Edit Jurnal" class="bg-white border border-blue-100 text-blue-600 hover:bg-blue-600 hover:text-white p-2 w-9 h-9 rounded-xl inline-flex items-center justify-center transition-all duration-300 shadow-sm">
                                 <i class="fas fa-pen text-sm"></i>
@@ -555,7 +559,7 @@
                             <button onclick="deleteIndividualJournal('${j.id}')" title="Hapus Jurnal" class="bg-white border border-red-100 text-red-500 hover:bg-red-500 hover:text-white p-2 w-9 h-9 rounded-xl inline-flex items-center justify-center transition-all duration-300 shadow-sm">
                                 <i class="fas fa-trash text-sm"></i>
                             </button>
-                            ` : ''}
+                            ` : '-'}
                         </div>
                     </td>
                 </tr>
@@ -588,15 +592,12 @@
             if(end) filtered = filtered.filter(j => j.tanggal <= end);
             if(name) filtered = filtered.filter(j => j.nama_user.toLowerCase().includes(name));
 
-            currentFilteredJournals = filtered; 
-            renderPage('dashboard'); // Memanggil ulang renderDashboard agar widget ikut terupdate
+            const filterState = { start: start, end: end, name: nameInput ? nameInput.value : '' };
+            renderDashboard(document.getElementById('content-container'), filtered, filterState);
         }
 
         function resetFilters() {
-            document.getElementById('filter-start').value = '';
-            document.getElementById('filter-end').value = '';
-            if(document.getElementById('filter-name')) document.getElementById('filter-name').value = '';
-            applyFilters();
+            renderDashboard(document.getElementById('content-container'));
         }
 
         // --- EXPORT TO EXCEL ---
@@ -1187,7 +1188,7 @@
             }
         }
 
-        // --- PRINTING LOGIC (Tetap Sama) ---
+        // --- PRINTING LOGIC ---
         async function handlePrintDialog() {
             const isAdminOrKepsek = currentUser.role === 'Admin' || currentUser.role === 'Kepsek';
 
@@ -1254,11 +1255,11 @@
                 if (filterValues.start) filtered = filtered.filter(j => j.tanggal >= filterValues.start);
                 if (filterValues.end) filtered = filtered.filter(j => j.tanggal <= filterValues.end);
 
-                printReport(filtered);
+                printReport(filtered, filterValues.nipGuru);
             }
         }
 
-        function printReport(dataToPrint) {
+        function printReport(dataToPrint, filterNipGuru = null) {
             if (!dataToPrint || dataToPrint.length === 0) return notify('Tidak ada data untuk dicetak pada filter tersebut', 'warning');
 
             const kepsek = { nama: 'Ni Kadek Yadnyani, S.Pd', nip: '197910162006042006' };
@@ -1267,16 +1268,30 @@
             let guruInfoNip = currentUser.nip;
             let isKepsekFormat = false;
             
-            if (currentUser.role === 'Kepsek') {
+            if (filterNipGuru) {
+                const targetUser = usersData.find(u => String(u.nip) === String(filterNipGuru));
+                if (targetUser) {
+                    guruInfoNama = targetUser.nama;
+                    guruInfoNip = targetUser.nip;
+                    if (targetUser.role === 'Kepsek') {
+                        isKepsekFormat = true;
+                    }
+                }
+            } else if (currentUser.role === 'Kepsek') {
                 isKepsekFormat = true;
             } else if (currentUser.role === 'Admin') {
                 const uniqueGurus = [...new Set(dataToPrint.map(j => j.nip_user))];
                 if (uniqueGurus.length === 1) {
-                    guruInfoNama = dataToPrint[0].nama_user;
-                    guruInfoNip = dataToPrint[0].nip_user;
                     const targetUser = usersData.find(u => u.nip === uniqueGurus[0]);
-                    if (targetUser && targetUser.role === 'Kepsek') {
-                        isKepsekFormat = true;
+                    if (targetUser) {
+                        guruInfoNama = targetUser.nama;
+                        guruInfoNip = targetUser.nip;
+                        if (targetUser.role === 'Kepsek') {
+                            isKepsekFormat = true;
+                        }
+                    } else {
+                        guruInfoNama = dataToPrint[0].nama_user;
+                        guruInfoNip = dataToPrint[0].nip_user;
                     }
                 } else {
                     guruInfoNama = "Semua Guru";
@@ -1342,6 +1357,7 @@
 
             let tableRows = "";
             let processedDates = {};
+            let dateCounter = 0; 
 
             sortedData.forEach((j, index) => {
                 const isIstirahat = j.kelas === 'Istirahat';
@@ -1361,9 +1377,11 @@
                 }
 
                 let rowHTML = "<tr>";
-                rowHTML += "<td class='center' rowspan='" + rowSpan + "'>" + (index + 1) + "</td>";
                 
+                // JIKA TANGGAL BELUM PERNAH DICETAK, BUAT TD UNTUK NO & TANGGAL DENGAN ROWSPAN TOTAL HARI ITU
                 if (!processedDates[j.tanggal]) {
+                    dateCounter++;
+                    rowHTML += "<td class='center' rowspan='" + dateSpans[j.tanggal] + "'>" + dateCounter + "</td>";
                     rowHTML += "<td class='center' rowspan='" + dateSpans[j.tanggal] + "'>" + dateDisplay + "</td>";
                     processedDates[j.tanggal] = true;
                 }
@@ -1408,6 +1426,28 @@
                 tableRows += rowHTML;
             });
 
+            // LOGIC UNTUK MEMISAHKAN FORMAT TANDA TANGAN KEPSEK DAN GURU
+            let footerHTML = "";
+            if (isKepsekFormat) {
+                footerHTML = `
+                    <table>
+                        <tr>
+                            <td style="text-align: left !important; padding-left: 5%;">Mengetahui<br>Pengawas<br><br><br><br><br>.......................................................<br>NIP.</td>
+                            <td style="text-align: left !important; padding-left: 15%;">Dawan, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}<br>Kepala SMP Negeri 1 Dawan<br><br><br><br><br>${kepsek.nama}<br>NIP. ${kepsek.nip}</td>
+                        </tr>
+                    </table>
+                `;
+            } else {
+                footerHTML = `
+                    <table>
+                        <tr>
+                            <td>Mengetahui,<br>Kepala SMP Negeri 1 Dawan<br><br><br><br><br><b><u>${kepsek.nama}</u></b><br>NIP. ${kepsek.nip}</td>
+                            <td>Dawan, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}<br>Guru Mata Pelajaran<br><br><br><br><br><b><u>${guruInfoNama}</u></b><br>${guruInfoNip !== '-' ? 'NIP. ' + guruInfoNip : ''}</td>
+                        </tr>
+                    </table>
+                `;
+            }
+
             const htmlString = `
                 <html>
                 <head>
@@ -1439,12 +1479,7 @@
                     </table>
 
                     <div class="footer">
-                        <table>
-                            <tr>
-                                <td>Mengetahui,<br>Kepala SMP Negeri 1 Dawan<br><br><br><br><br><b><u>${kepsek.nama}</u></b><br>NIP. ${kepsek.nip}</td>
-                                <td>Dawan, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}<br>Guru Mata Pelajaran<br><br><br><br><br><b><u>${guruInfoNama}</u></b><br>${guruInfoNip !== '-' ? 'NIP. ' + guruInfoNip : ''}</td>
-                            </tr>
-                        </table>
+                        ${footerHTML}
                     </div>
                     <script>setTimeout(() => window.print(), 500);<\/script>
                 </body>
